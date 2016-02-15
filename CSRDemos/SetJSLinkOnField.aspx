@@ -83,11 +83,19 @@
                 return false;
             }
 
-            window.jmm = {};
+            window.intellipoint = {};
 
-            jmm.jslinkSetter = {
+            ////////////////////////////////////////////////////////////////////////////////
+            // Form code behind class
+            ////////////////////////////////////////////////////////////////////////////////
+            intellipoint.jslinkSetter = {
                 groups: [],
                 options: {},
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Initialize the SharePoint object model context, populate the drop-down
+                // of column groups and columns, and attach event handlers.
+                ////////////////////////////////////////////////////////////////////////////////
                 init: function () {
                     jslinkSetter.ctx = new SP.ClientContext.get_current();
                     jslinkSetter.web = jslinkSetter.ctx.get_web();
@@ -101,6 +109,7 @@
                             jslinkSetter.initGroupSelect();
                             jslinkSetter.initFieldSelect();
                             jslinkSetter.initButton();
+                            document.getElementById("setJsLink").disabled = true;
                             document.getElementById("form").style.display = "block";
                         },
                         function () {
@@ -109,6 +118,10 @@
                     );
                 },
 
+                ////////////////////////////////////////////////////////////////////////////////
+                // Enumerate the site columns and store information about them to be used
+                // to populate the drop-downs.
+                ////////////////////////////////////////////////////////////////////////////////
                 enumerateFields: function () {
                     var enumerator = jslinkSetter.fields.getEnumerator();
                     while (enumerator.moveNext()) {
@@ -125,6 +138,9 @@
                     }
                 },
 
+                ////////////////////////////////////////////////////////////////////////////////
+                // Initialize the group drop-down and add an onchange listener to it.
+                ////////////////////////////////////////////////////////////////////////////////
                 initGroupSelect: function () {
                     var groupSelect = document.getElementById("groupSelect");
                     jslinkSetter.groups = jslinkSetter.groups.sort();
@@ -142,9 +158,10 @@
                         var keys = Object.keys(jslinkSetter.options).sort();
                         fieldSelect.innerHTML = "<option></option>";
                         document.getElementById("jslink").value = "";
+                        document.getElementById("setJsLink").disabled = true;
                         for (var i = 0; i < keys.length; i++) {
                             var o = jslinkSetter.options[keys[i]];
-                            if (o.group === e.target.value) {
+                            if (e.target.value.length === 0 || o.group === e.target.value) {
                                 var newOption = document.createElement("option");
                                 newOption.value = o.value;
                                 newOption.text = o.text;
@@ -154,6 +171,9 @@
                     }
                 },
 
+                ////////////////////////////////////////////////////////////////////////////////
+                // Initialize the field drop-down and add an onchange listener to it.
+                ////////////////////////////////////////////////////////////////////////////////
                 initFieldSelect: function () {
                     var fieldSelect = document.getElementById("fieldSelect");
                     var keys = Object.keys(jslinkSetter.options).sort();
@@ -167,11 +187,21 @@
 
                     fieldSelect.onchange = function (e) {
                         e = e || event;
-                        var option = jslinkSetter.options[e.target.value];
-                        document.getElementById("jslink").value = option.jslink;
+                        if (e.target.value.length > 0) {
+                            var option = jslinkSetter.options[e.target.value];
+                            document.getElementById("jslink").value = option.jslink;
+                            document.getElementById("setJsLink").disabled = false;
+                        }
+                        else {
+                            document.getElementById("jslink").value = "";
+                            document.getElementById("setJsLink").disabled = true;
+                        }
                     }
                 },
 
+                ////////////////////////////////////////////////////////////////////////////////
+                // Initialize the button and add an onchange listener to it.
+                ////////////////////////////////////////////////////////////////////////////////
                 initButton: function () {
                     var button = document.getElementById("setJsLink");
                     button.onclick = function (e) {
@@ -201,11 +231,11 @@
                     };
                 }
             };
-            var jslinkSetter = jmm.jslinkSetter;
+            var jslinkSetter = intellipoint.jslinkSetter;
         })();
 
         SP.SOD.executeFunc("sp.js", "SP.ClientContext", function () {
-            jmm.jslinkSetter.init();
+            intellipoint.jslinkSetter.init();
         });
     </script>
 </asp:Content>

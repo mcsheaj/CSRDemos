@@ -95,7 +95,7 @@
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // Initialize the SharePoint object model context, populate the drop-down
-                // of content type groups, and attach event handlers.
+                // of content type groups and content types, and attach event handlers.
                 ////////////////////////////////////////////////////////////////////////////////
                 init: function () {
                     jslinkSetter.ctx = new SP.ClientContext.get_current();
@@ -201,7 +201,7 @@
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////
-                // Initialize the button drop-down and add an onchange listener to it.
+                // Initialize the button and add an onchange listener to it.
                 ////////////////////////////////////////////////////////////////////////////////
                 initButton: function () {
                     var button = document.getElementById("setJsLink");
