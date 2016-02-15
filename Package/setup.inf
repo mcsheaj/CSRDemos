@@ -1,0 +1,25 @@
+;*** BEGIN **********************************************************
+;**                                                                **
+;** Automatically generated on: Fri Nov 27 18:22:38 2015           **
+;**                                                                **
+;** MakeCAB Version: 10.0.10011.16384                                 **
+;**                                                                **
+;*** BEGIN **********************************************************
+[disk list]
+1,Disk 1
+[cabinet list]
+1,1,StarRatingsCSR.wsp
+[file list]
+1,1,Manifest.xml,291
+1,1,StarRatingsCSR\Feature.xml,633
+1,1,StarRatingsCSR\FieldType.xml,506
+1,1,StarRatingsCSR\Module.xml,655
+1,1,StarRatingsCSR\jquery.js,282766
+1,1,StarRatingsCSR\StarRatingsCSR.js,860
+1,1,StarRatingsCSR\stars.png,9806
+1,1,StarRatingsCSR\starratings.css,423
+;*** END ************************************************************
+;**                                                                **
+;** Automatically generated on: Fri Nov 27 18:22:38 2015           **
+;**                                                                **
+;*** END ************************************************************

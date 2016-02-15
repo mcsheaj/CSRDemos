@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <Field ID="{7432d509-eaf0-4f75-a1bc-96bc25fb4ef7}"
+        Name="StarRating"
+        DisplayName="Star Rating"
+        Type="Number"
+        Decimals="0"
+        Min="0"
+        Max="5"
+        Required="FALSE"
+        JSLink="~sitecollection/Style Library/StarRatingsCSR/jquery.js|~sitecollection/Style Library/StarRatingsCSR/StarRatingsCSR.js"
+        Group="CSR Demos" />
+</Elements>
