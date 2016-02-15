@@ -1,8 +1,3 @@
-<!--
- @copyright 2016 Joe McShea
- @license under the MIT license:
-    http://www.opensource.org/licenses/mit-license.php
--->
 <%@ Assembly Name="Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
 
 <%@ Page Language="C#" Inherits="Microsoft.SharePoint.WebPartPages.WikiEditPage" MasterPageFile="~masterurl/default.master" %>
@@ -11,12 +6,18 @@
 <%@ Import Namespace="Microsoft.SharePoint" %>
 <asp:Content ContentPlaceHolderID='PlaceHolderPageTitle' runat='server'>
     Set JSLink on ContentType
+<!--
+ @copyright 2016 Joe McShea
+ @license under the MIT license:
+    http://www.opensource.org/licenses/mit-license.php
+-->
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderPageTitleInTitleArea' runat='server'>
     <span class='ms-WikiPageNameEditor-Display' id='listBreadCrumb'></span>
     <span class='ms-WikiPageNameEditor-Display' id='wikiPageNameDisplay'></span>
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderAdditionalPageHead' runat='server'>
+
     <meta name='CollaborationServer' content='SharePoint Team Web Site' />
     <style type="text/css">
         #pageStatusBar {
