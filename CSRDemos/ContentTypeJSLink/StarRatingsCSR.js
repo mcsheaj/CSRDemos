@@ -1,4 +1,9 @@
-﻿(function ($) {
+﻿/*
+ *  @copyright 2016 Joe McShea
+ *  @license under the MIT license:
+ *     http://www.opensource.org/licenses/mit-license.php
+ */
+(function ($) {
     starRatingFields = [
         'Content1',
         'Relevance',
