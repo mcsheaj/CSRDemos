@@ -84,7 +84,8 @@
                 return false;
             }
 
-            window.intellipoint = {};
+            if (!window.intellipoint)
+                window.intellipoint = {};
 
             ////////////////////////////////////////////////////////////////////////////////
             // Form code behind class

@@ -43,6 +43,7 @@
     <Content Include="ContentTypeJSLink\starratings.css" />
     <Content Include="ContentTypeJSLink\StarRatingsCSR.js" />
     <Content Include="ContentTypeJSLink\stars.png" />
+    <Content Include="SetScriptlink.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
