@@ -4,6 +4,9 @@
  *     http://www.opensource.org/licenses/mit-license.php
  */
 (function ($) {
+    if (typeof (SPClientTemplates) === 'undefined')
+        return;
+
     starRatingFields = [
         'Content1',
         'Relevance',
@@ -134,14 +137,14 @@
     /*
      * Create overrides for the new, edit, and display forms and views for the star ratings field.
      */
-    $.starRating = {
+    $.starRatingOverrides = {
         Templates: {
             'Fields': {
             }
         }
     };
     $.each($(starRatingFields), function (i, v) {
-        $.starRating.Templates.Fields[v] = {
+        $.starRatingOverrides.Templates.Fields[v] = {
             'View': $.starRatingImpl.displayMethod,
             'DisplayForm': $.starRatingImpl.displayMethod,
             'NewForm': $.starRatingImpl.inputMethod,
@@ -157,14 +160,14 @@
             '/Style Library/ContentTypeJSLink/starratingscsr.js';
         // register a callback to register the templates on partial page loads
         RegisterModuleInit(url, function () {
-            SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRating);
+            SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRatingOverrides);
         });
         // also just register for full page loads (F5/refresh)
-        SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRating);
+        SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRatingOverrides);
     } else {
         // if no _spPageContextInfo, then this is a full page load regardless of 
         // MDS being enabled or not, so just register normally
-        SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRating);
+        SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRatingOverrides);
     }
 })(jQuery);
 
