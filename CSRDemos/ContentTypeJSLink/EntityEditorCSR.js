@@ -8,7 +8,7 @@
         return;
 
     entityEditorFields = [
-        'TagsCovered',
+        //'TagsCovered',
         'TagsNotCovered'
     ];
 
@@ -38,27 +38,29 @@
 
             $.entityEditorImpl.source[current.fieldName] = current.fieldSchema.MultiChoices;
 
-            var values = ctx.CurrentFieldValue.replace(/^;#/, '').replace(/;#$/, '').split(';#');
+            if (ctx.CurrentFieldValue.length > 0) {
+                var values = ctx.CurrentFieldValue.replace(/^;#/, '').replace(/;#$/, '').split(';#');
 
-            $.each(values, function (idx, value) {
-                var anchor = $('<a/>', {
-                    "title": "Remove Entity",
-                    "data-fieldname": current.fieldName,
-                    "data-value": value,
-                    "class": "csrdemos-remove",
-                    "href": "#"
-                }).text("x");
+                $.each(values, function (idx, value) {
+                    var anchor = $('<a/>', {
+                        "title": "Remove Entity",
+                        "data-fieldname": current.fieldName,
+                        "data-value": value,
+                        "class": "csrdemos-remove",
+                        "href": "#"
+                    }).text("x");
 
-                entityEditor.append($("<span/>", {
-                    'title': value,
-                    'class': 'csrdemos-entity'
-                }).html(value + anchor[0].outerHTML));
+                    entityEditor.append($("<span/>", {
+                        'title': value,
+                        'class': 'csrdemos-entity'
+                    }).html(value + anchor[0].outerHTML));
 
-                if ($.inArray(value, $.entityEditorImpl.source[current.fieldName]) > -1) {
-                    $.entityEditorImpl.source[current.fieldName].splice(
-                        $.inArray(value, $.entityEditorImpl.source[current.fieldName]), 1);
-                }
-            });
+                    if ($.inArray(value, $.entityEditorImpl.source[current.fieldName]) > -1) {
+                        $.entityEditorImpl.source[current.fieldName].splice(
+                            $.inArray(value, $.entityEditorImpl.source[current.fieldName]), 1);
+                    }
+                });
+            }
 
             var input = $('<input/>', {
                 'id': current.fieldName + 'EntityEditorInput',
@@ -72,6 +74,11 @@
                 'id': current.fieldName + 'EntityEditorError',
                 'class': 'ms-formvalidation ms-csrformvalidation'
             }));
+
+            // register a callback to return the current value
+            current.registerGetValueCallback(
+                current.fieldName,
+                $.entityEditorImpl.getFieldValue.bind(null, current.fieldName));
 
             $(".ms-formtable").on("click", ".csrdemos-remove", function (e) {
                 e.stopImmediatePropagation();
@@ -91,11 +98,6 @@
          * Setup validation for the input form.
          */
         registerValidators: function(current) {
-            // register a callback to return the current value
-            current.registerGetValueCallback(
-                current.fieldName,
-                $.entityEditorImpl.getFieldValue.bind(null, current.fieldName));
-
             // create a validator set
             var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
             fieldValidators.RegisterValidator(new entityEditorFieldValidator());
@@ -118,19 +120,23 @@
          * Return the current value from the data-value attribute of my div.
          */
         getFieldValue: function (fieldName) {
+            return $.entityEditorImpl.getFieldValueImpl(fieldName);
+        },
+
+        getFieldValueImpl: function(fieldName) {
             var result = [];
-            
+
             var entityEditorDiv = $('#' + fieldName + 'EntityEditor');
             entityEditorDiv.find('.csrdemos-entity').each(function () {
-                result.push($(this).attr('title'));
+                result.push($(this).find("a").attr("data-value"));
             });
 
             var entityEditorInput = entityEditorDiv.find(".csrdemos-entityeditorinput");
             if (entityEditorInput.val().length > 0) {
                 result.push(entityEditorInput.val());
             }
-            
-            return '#;' + result.join('#') + '#;';
+
+            return ';#' + result.join(';#') + ';#';
         },
 
         /*
