@@ -46,7 +46,7 @@
             // register a callback to return the current value
             current.registerGetValueCallback(
                 current.fieldName,
-                $.starRatingImpl.getFieldValue.bind(null, current.fieldName));
+                $.starRatingImpl.getFieldValue.bind($.starRatingImpl, current.fieldName));
 
             // create a validator set
             var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
@@ -94,7 +94,7 @@
         getCss: function () {
             if (!$('body').attr('data-starcssadded')) {
                 var css = _spPageContextInfo.siteAbsoluteUrl +
-                    '/Style Library/FieldJSLink/starratings.css';
+                    '/Style Library/ContentTypeJSLink/starratings.css';
                 $('head').append(
                     '<link rel="stylesheet" type="text/css" href="' + css + '">');
                 $('body').attr('data-starcssadded', 'true');

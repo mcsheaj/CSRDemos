@@ -25,3 +25,13 @@
 .csrdemos-5stars {
     background-position: 0 100px;
 }
+
+input.ms-long, 
+textarea,
+div.ms-rtestate-write,
+input.ms-input,
+.csrdemos-entityeditor {
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+

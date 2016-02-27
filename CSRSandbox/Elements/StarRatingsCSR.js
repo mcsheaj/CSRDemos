@@ -85,7 +85,7 @@
         getCss: function () {
             if (!$('body').attr('data-starcssadded')) {
                 var css = _spPageContextInfo.siteAbsoluteUrl +
-                    '/Style Library/StarRatingsCSR/starratings.css';
+                    '/Style Library/CSRSandbox/starratings.css';
                 $('head').append(
                     '<link rel="stylesheet" type="text/css" href="' + css + '">');
                 $('body').attr('data-starcssadded', 'true');
@@ -146,7 +146,7 @@
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
         // MDS is enabled
         var url = _spPageContextInfo.siteServerRelativeUrl +
-            '/Style Library/StarRatingsCSR/starratingscsr.js';
+            '/Style Library/CSRSandbox/starratingscsr.js';
         // register a callback to register the templates on partial page loads
         RegisterModuleInit(url, function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRatingOverrides);

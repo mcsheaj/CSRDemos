@@ -37,16 +37,40 @@
     <None Include="Package\Package.ddf" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Elements\entityeditor.css" />
+    <Content Include="Elements\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Elements\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Elements\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Elements\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Elements\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Elements\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Elements\images\ui-icons_222222_256x240.png" />
+    <Content Include="Elements\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Elements\images\ui-icons_454545_256x240.png" />
+    <Content Include="Elements\images\ui-icons_888888_256x240.png" />
+    <Content Include="Elements\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Elements\jquery-ui.css" />
+    <Content Include="Elements\jquery-ui.js" />
+    <Content Include="Elements\jquery-ui.theme.css" />
     <Content Include="Elements\jquery.js" />
-    <Content Include="Elements\Module.xml" />
+    <Content Include="Elements\Module.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Elements\starratings.css" />
     <Content Include="Elements\StarRatingsCSR.js" />
-    <Content Include="Elements\FieldType.xml" />
+    <Content Include="Elements\FieldType.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Elements\stars.png" />
+    <Content Include="Elements\EntityEditorCSR.js" />
     <Content Include="Features\Feature.xml" />
     <Content Include="Package\Manifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cd ..\..\Package
+Build.bat</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

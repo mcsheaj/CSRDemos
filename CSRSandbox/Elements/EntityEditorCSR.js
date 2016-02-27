@@ -4,12 +4,8 @@
  *     http://www.opensource.org/licenses/mit-license.php
  */
 (function ($) {
-    if (typeof (SPClientTemplates) === 'undefined')
-        return;
-
     entityEditorFields = [
-        'TagsCovered',
-        'TagsNotCovered'
+        'EntityEditor'
     ];
 
     /*
@@ -106,7 +102,7 @@
         /*
          * Setup validation for the input form.
          */
-        registerValidators: function (current) {
+        registerValidators: function(current) {
             // create a validator set
             var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
             fieldValidators.RegisterValidator(new entityEditorFieldValidator());
@@ -150,7 +146,7 @@
         getCss: function () {
             if (!$('body').attr('data-entityeditorcssadded')) {
                 var css = _spPageContextInfo.siteAbsoluteUrl +
-                    '/Style Library/ContentTypeJSLink/entityeditor.css';
+                    '/Style Library/CSRSandbox/entityeditor.css';
                 $('head').append(
                     '<link rel="stylesheet" type="text/css" href="' + css + '">');
                 css = _spPageContextInfo.siteAbsoluteUrl +
@@ -247,7 +243,7 @@
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
         // MDS is enabled
         var url = _spPageContextInfo.siteServerRelativeUrl +
-            '/style library/contenttypejslink/entityeditorcsr.js';
+            '/style library/CSRSandbox/entityeditorcsr.js';
         // register a callback to register the templates on partial page loads
         RegisterModuleInit(url, function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);

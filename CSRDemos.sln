@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.txt = readme.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarRatingsCSRSandbox", "StarRatingsCSRSandbox\StarRatingsCSRSandbox.csproj", "{CCC81D90-A435-45C4-9DC4-4EE375E60443}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSRSandbox", "CSRSandbox\CSRSandbox.csproj", "{CCC81D90-A435-45C4-9DC4-4EE375E60443}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
