@@ -64,7 +64,9 @@
     <Content Include="Elements\stars.png" />
     <Content Include="Elements\EntityEditorCSR.js" />
     <Content Include="Features\Feature.xml" />
-    <Content Include="Package\Manifest.xml" />
+    <Content Include="Package\Manifest.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

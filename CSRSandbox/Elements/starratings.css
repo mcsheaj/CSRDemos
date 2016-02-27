@@ -28,10 +28,10 @@
 
 input.ms-long, 
 textarea,
-div.ms-rtestate-write,
+div.ms-rtestate-field,
 input.ms-input,
-.csrdemos-entityeditor {
+.csrdemos-entityeditor,
+span.ms-RadioText {
     margin-left: 10px;
-    margin-bottom: 10px;
 }
 

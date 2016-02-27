@@ -65,7 +65,9 @@
             <tr>
                 <td>JSLink:</td>
                 <td>
-                    <input type="text" name="jslink" id="jslink" style="width: 600px;" />
+                    <textarea
+                        title="Enter paths to JavaScript files to load for this field. JavaScript files must be stored in this site collection and the path must begin with ~sitecollection."
+                        id='jslink' rows='10' cols='100'></textarea>
                 </td>
             </tr>
         </table>
@@ -190,7 +192,15 @@
                         e = e || event;
                         if (e.target.value.length > 0) {
                             var option = jslinkSetter.options[e.target.value];
-                            document.getElementById("jslink").value = option.jslink;
+                            var jslink = "";
+                            var a = option.jslink.split("|");
+                            for(var i=0; i<a.length; i++) {
+                                if (jslink.length > 0) {
+                                    jslink += "\n";
+                                }
+                                jslink += a[i];
+                            }
+                            document.getElementById("jslink").value = jslink;
                             document.getElementById("setJsLink").disabled = false;
                         }
                         else {
@@ -208,16 +218,24 @@
                     button.onclick = function (e) {
                         e = e || event;
                         var name = document.getElementById("fieldSelect").value;
-                        // cannot be applied to Taxonomy fields, Related Items field, and Task Outcome field, jsLink is read-only on those objects
-                        var field = jslinkSetter.web.get_availableFields().getByTitle(name);
+                        // cannot be applied to Taxonomy fields, Related Items field, and Task 
+                        // Outcome field, jsLink is read-only on those objects
+                        var field = jslinkSetter.web.get_availableFields().getByInternalNameOrTitle(name);
                         jslinkSetter.ctx.load(field);
                         jslinkSetter.ctx.executeQueryAsync(
                             function () {
-                                field.set_jsLink(document.getElementById("jslink").value);
+                                var jslink = "";
+                                var a = document.getElementById("jslink").value.split("\n");
+                                for (var i = 0; i < a.length; i++) {
+                                    if (jslink.length > 0) {
+                                        jslink += "|";
+                                    }
+                                    jslink += a[i];
+                                }
+                                field.set_jsLink(jslink);
                                 field.updateAndPushChanges(true);
                                 jslinkSetter.ctx.executeQueryAsync(
                                     function () {
-                                        document.getElementById("jslink").value = field.get_jsLink();
                                         alert("Successfully updated site column '" + name + "'.");
                                     },
                                     function () {

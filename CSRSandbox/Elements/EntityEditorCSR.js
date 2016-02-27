@@ -4,8 +4,10 @@
  *     http://www.opensource.org/licenses/mit-license.php
  */
 (function ($) {
-    entityEditorFields = [
-        'EntityEditor'
+    var entityEditorFields = [
+        'EntityEditor',
+        'TagsCovered',
+        'TagsNotCovered'
     ];
 
     /*
@@ -146,11 +148,11 @@
         getCss: function () {
             if (!$('body').attr('data-entityeditorcssadded')) {
                 var css = _spPageContextInfo.siteAbsoluteUrl +
-                    '/Style Library/CSRSandbox/entityeditor.css';
+                    '/style library/entityeditor.css';
                 $('head').append(
                     '<link rel="stylesheet" type="text/css" href="' + css + '">');
                 css = _spPageContextInfo.siteAbsoluteUrl +
-                    "/Style Library/jquery-ui.css";
+                    "/style library/jquery-ui.css";
                 $('head').append(
                     '<link rel="stylesheet" type="text/css" href="' + css + '">');
                 $('body').attr('data-entityeditorcssadded', 'true');
@@ -200,7 +202,7 @@
     };
 
     /*
-     * Create overrides for the new, edit, and display forms and views for the star ratings field.
+     * Create an empty overrides object.
      */
     var entityEditorOverrides = {
         Templates: {
@@ -243,9 +245,9 @@
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
         // MDS is enabled
         var url = _spPageContextInfo.siteServerRelativeUrl +
-            '/style library/CSRSandbox/entityeditorcsr.js';
+            '/style library/entityeditorcsr.js';
         // register a callback to register the templates on partial page loads
-        RegisterModuleInit(url, function () {
+        RegisterModuleInit(url.toLowerCase(), function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
         });
         // also just register for full page loads (F5/refresh)

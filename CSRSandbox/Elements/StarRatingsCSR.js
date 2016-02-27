@@ -4,6 +4,13 @@
  *     http://www.opensource.org/licenses/mit-license.php
  */
 (function ($) {
+    var starRatingFields = [
+        'StarRating',
+        'Content1',
+        'Relevance',
+        'Presentation'
+    ];
+
     /*
      * Implementation class for the overrides.
      */
@@ -85,7 +92,7 @@
         getCss: function () {
             if (!$('body').attr('data-starcssadded')) {
                 var css = _spPageContextInfo.siteAbsoluteUrl +
-                    '/Style Library/CSRSandbox/starratings.css';
+                    '/style library/starratings.css';
                 $('head').append(
                     '<link rel="stylesheet" type="text/css" href="' + css + '">');
                 $('body').attr('data-starcssadded', 'true');
@@ -127,36 +134,41 @@
 
 
     /*
-     * Create overrides for the new, edit, and display forms and views for the star ratings field.
+     * Create an empty overrides object.
      */
-    $.starRatingOverrides = {
+    var starRatingOverrides = {
         Templates: {
-            'Fields': {
-                'StarRating': {
-                    'View': $.starRatingImpl.displayMethod,
-                    'DisplayForm': $.starRatingImpl.displayMethod,
-                    'NewForm': $.starRatingImpl.inputMethod,
-                    'EditForm': $.starRatingImpl.inputMethod
-                }
-            }
+            'Fields': {}
         }
     };
+
+    /*
+     * Add an overrides object for each field we want to customize.
+     */
+    $.each($(starRatingFields), function (i, v) {
+        starRatingOverrides.Templates.Fields[v] = {
+            'View': $.starRatingImpl.displayMethod,
+            'DisplayForm': $.starRatingImpl.displayMethod,
+            'NewForm': $.starRatingImpl.inputMethod,
+            'EditForm': $.starRatingImpl.inputMethod
+        };
+    });
 
     // register my template overrides
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
         // MDS is enabled
         var url = _spPageContextInfo.siteServerRelativeUrl +
-            '/Style Library/CSRSandbox/starratingscsr.js';
+            '/style library/starratingscsr.js';
         // register a callback to register the templates on partial page loads
-        RegisterModuleInit(url, function () {
-            SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRatingOverrides);
+        RegisterModuleInit(url.toLowerCase(), function () {
+            SPClientTemplates.TemplateManager.RegisterTemplateOverrides(starRatingOverrides);
         });
         // also just register for full page loads (F5/refresh)
-        SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRatingOverrides);
+        SPClientTemplates.TemplateManager.RegisterTemplateOverrides(starRatingOverrides);
     } else {
         // if no _spPageContextInfo, then this is a full page load regardless of 
         // MDS being enabled or not, so just register normally
-        SPClientTemplates.TemplateManager.RegisterTemplateOverrides($.starRatingOverrides);
+        SPClientTemplates.TemplateManager.RegisterTemplateOverrides(starRatingOverrides);
     }
 })(jQuery);
 

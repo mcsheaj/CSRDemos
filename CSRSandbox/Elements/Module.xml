@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
-    <Module Name="CSRSandbox" Url="Style Library/CSRSandbox">
+    <Module Name="CSRSandbox" Url="Style Library">
         <File Path="jquery.js" Url="jquery.js" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
         <File Path="StarRatingsCSR.js" Url="StarRatingsCSR.js" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
         <File Path="stars.png" Url="stars.png" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
@@ -11,7 +11,7 @@
         <File Path="jquery-ui.css" Url="jquery-ui.css" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
         <File Path="jquery-ui.theme.css" Url="jquery-ui.theme.css" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
     </Module>
-    <Module Name="CSRSandboxImage" Url="Style Library/CSRSandbox/images">
+    <Module Name="CSRSandboxImage" Url="Style Library/images">
         <File Path="ui-bg_glass_55_fbf9ee_1x400.png" Url="ui-bg_glass_55_fbf9ee_1x400.png" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
         <File Path="ui-bg_glass_65_ffffff_1x400.png" Url="ui-bg_glass_65_ffffff_1x400.png" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
         <File Path="ui-bg_glass_75_dadada_1x400.png" Url="ui-bg_glass_75_dadada_1x400.png" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />

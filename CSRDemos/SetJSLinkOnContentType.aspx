@@ -133,6 +133,7 @@
                         option.text = option.value;
                         option.group = current.get_group();
                         option.jslink = current.get_jsLink();
+                        option.id = current.get_id().toString();
                         if (!jslinkSetter.groups.contains(option.group)) {
                             jslinkSetter.groups.push(option.group);
                         }
