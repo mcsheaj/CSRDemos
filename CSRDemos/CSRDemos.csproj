@@ -60,6 +60,7 @@
     <Content Include="jquery-ui.js" />
     <Content Include="jquery-ui.theme.css" />
     <Content Include="jquery.js" />
+    <Content Include="ScriptLinks.txt" />
     <Content Include="SetJSLinkOnContentType.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>

@@ -1,0 +1,4 @@
+﻿~sitecollection/Style Library/jquery.js
+~sitecollection/Style Library/StarRatingsCSR.js
+~sitecollection/Style Library/EntityEditorCSR.js
+~sitecollection/Style Library/jquery-ui.js
