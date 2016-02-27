@@ -99,6 +99,7 @@
                 $.entityEditorImpl.source[fieldName].push(value);
                 entityEditorInput.autocomplete("option", "source", $.entityEditorImpl.source[fieldName].sort()).focus();
                 $(this).parent().remove();
+                return false;
             });
 
             return result.html();

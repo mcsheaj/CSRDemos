@@ -44,6 +44,28 @@
 
             var current = SPClientTemplates.Utility.GetFormContextForCurrentField(ctx);
 
+            // construct the html for our control and return it
+            var result = $('<p />');
+            result.append($('<div/>', {
+                'id': current.fieldName,
+                'class': 'csrdemos-stars csrdemos-' + ctx.CurrentFieldValue + 'stars',
+                'data-value': ctx.CurrentFieldValue,
+                'onclick': '$.starRatingImpl.handleClickOnStarRating(event)'
+            }));
+            result.append($('<span/>', {
+                'id': current.fieldName + 'Error',
+                'class': 'ms-formvalidation ms-csrformvalidation'
+            }));
+
+            $.starRatingImpl.registerValidators(current);
+
+            return result.html();
+        },
+
+        /*
+         * Setup validation handlers on the new and edit forms.
+         */
+        registerValidators: function (current) {
             // register a callback to return the current value
             current.registerGetValueCallback(
                 current.fieldName,
@@ -65,21 +87,6 @@
 
             // register the validators
             current.registerClientValidator(current.fieldName, fieldValidators);
-
-            // construct the html for our control and return it
-            var result = $('<p />');
-            result.append($('<div/>', {
-                'id': current.fieldName,
-                'class': 'csrdemos-stars csrdemos-' + ctx.CurrentFieldValue + 'stars',
-                'data-value': ctx.CurrentFieldValue,
-                'onclick': '$.starRatingImpl.handleClickOnStarRating(event)'
-            }));
-            result.append($('<span/>', {
-                'id': current.fieldName + 'Error',
-                'class': 'ms-formvalidation ms-csrformvalidation'
-            }));
-
-            return result.html();
         },
 
         /*
