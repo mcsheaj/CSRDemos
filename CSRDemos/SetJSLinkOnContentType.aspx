@@ -66,7 +66,9 @@
             <tr>
                 <td>JSLink:</td>
                 <td>
-                    <input type="text" name="jslink" id="jslink" style="width: 600px;" />
+                    <textarea
+                        title="Enter paths to JavaScript files to load for this field. JavaScript files must be stored in this site collection and the path must begin with ~sitecollection."
+                        id='jslink' rows='10' cols='100'></textarea>
                 </td>
             </tr>
         </table>
@@ -192,7 +194,7 @@
                         e = e || event;
                         if (e.target.value.length > 0) {
                             var option = jslinkSetter.options[e.target.value];
-                            document.getElementById("jslink").value = option.jslink;
+                            document.getElementById("jslink").value = option.jslink.split("|").join("\n");
                             document.getElementById("setJsLink").disabled = false;
                         }
                         else {
@@ -225,11 +227,10 @@
                                     }
                                 }
                                 // set jslink not supported for survey or event content types
-                                contentType.set_jsLink(document.getElementById("jslink").value);
+                                contentType.set_jsLink(document.getElementById("jslink").value.split("\n").join("|"));
                                 contentType.update(true);
                                 jslinkSetter.ctx.executeQueryAsync(
                                     function () {
-                                        document.getElementById("jslink").value = contentType.get_jsLink();
                                         alert("Successfully updated content type '" + name + "'.");
                                     },
                                     function () {

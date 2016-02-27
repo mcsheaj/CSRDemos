@@ -192,15 +192,7 @@
                         e = e || event;
                         if (e.target.value.length > 0) {
                             var option = jslinkSetter.options[e.target.value];
-                            var jslink = "";
-                            var a = option.jslink.split("|");
-                            for(var i=0; i<a.length; i++) {
-                                if (jslink.length > 0) {
-                                    jslink += "\n";
-                                }
-                                jslink += a[i];
-                            }
-                            document.getElementById("jslink").value = jslink;
+                            document.getElementById("jslink").value = option.jslink.split("|").join("\n");
                             document.getElementById("setJsLink").disabled = false;
                         }
                         else {
@@ -224,15 +216,7 @@
                         jslinkSetter.ctx.load(field);
                         jslinkSetter.ctx.executeQueryAsync(
                             function () {
-                                var jslink = "";
-                                var a = document.getElementById("jslink").value.split("\n");
-                                for (var i = 0; i < a.length; i++) {
-                                    if (jslink.length > 0) {
-                                        jslink += "|";
-                                    }
-                                    jslink += a[i];
-                                }
-                                field.set_jsLink(jslink);
+                                field.set_jsLink(document.getElementById("jslink").value.split("\n").join("|"));
                                 field.updateAndPushChanges(true);
                                 jslinkSetter.ctx.executeQueryAsync(
                                     function () {

@@ -69,11 +69,11 @@
             if (!window.intellipoint)
                 window.intellipoint = {};
 
-            intellipoint.scriplinkSetter = {
+            intellipoint.scriptlinkSetter = {
                 scriptlinks: [],
 
                 init: function () {
-                    scriplinkSetter.getScriptlinks(function (links) {
+                    scriptlinkSetter.getScriptlinks(function (links) {
                         if (links) {
                             var linksText = "";
                             for (var i = 0; i < links.length; i++) {
@@ -86,7 +86,7 @@
                     var button = document.getElementById("saveButton");
                     button.onclick = function (e) {
                         e = e || window.event;
-                        scriplinkSetter.deleteScriptlinks(function () {
+                        scriptlinkSetter.deleteScriptlinks(function () {
                             var scriptlinks = document.getElementById("scriptLinks").value.trim();
                             if (scriptlinks.length > 0) {
                                 var files = scriptlinks.split("\n");
@@ -95,13 +95,13 @@
                                     if (file.trim().length > 0) {
                                         file = file.trim();
                                         if (/\.js$/.test(file)) {
-                                            intellipoint.scriplinkSetter.scriptlinks.push(file);
+                                            scriptlinkSetter.scriptlinks.push(file);
                                         }
                                     }
                                 }
                             }
 
-                            scriplinkSetter.addScriptlinks(function () {
+                            scriptlinkSetter.addScriptlinks(function () {
                                 alert("Scriptlinks successfully saved.");
                             });
                         });
@@ -111,11 +111,11 @@
                 addScriptlinks: function (callback) {
                     var found = false;
                     var suuid = Math.uuidFast("_");
-                    for (var i = 0; i < intellipoint.scriplinkSetter.scriptlinks.length; i++) {
-                        var file = intellipoint.scriplinkSetter.scriptlinks[i];
+                    for (var i = 0; i < scriptlinkSetter.scriptlinks.length; i++) {
+                        var file = scriptlinkSetter.scriptlinks[i];
                         if (/\.js$/.test(file) && /^~sitecollection/.test(file)) {
                             found = true;
-                            var newAction = scriplinkSetter.userCustomActions.add();
+                            var newAction = scriptlinkSetter.userCustomActions.add();
                             newAction.set_location("ScriptLink");
                             newAction.set_scriptSrc(file + "?rev=" + suuid);
                             newAction.set_sequence(59000 + i);
@@ -126,7 +126,7 @@
                     }
 
                     if (found) {
-                        scriplinkSetter.clientContext.executeQueryAsync(callback, scriplinkSetter.error);
+                        scriptlinkSetter.clientContext.executeQueryAsync(callback, scriptlinkSetter.error);
                     }
                     else {
                         callback();
@@ -134,8 +134,8 @@
                 },
 
                 deleteScriptlinks: function (callback) {
-                    scriplinkSetter.initClientContext(function () {
-                        var enumerator = scriplinkSetter.userCustomActions.getEnumerator();
+                    scriptlinkSetter.initClientContext(function () {
+                        var enumerator = scriptlinkSetter.userCustomActions.getEnumerator();
                         var toDelete = [];
                         while (enumerator.moveNext()) {
                             var action = enumerator.get_current();
@@ -149,17 +149,17 @@
                                 toDelete[i].deleteObject();
                             }
 
-                            scriplinkSetter.clientContext.executeQueryAsync(callback, scriplinkSetter.error);
+                            scriptlinkSetter.clientContext.executeQueryAsync(callback, scriptlinkSetter.error);
                         }
                         else {
                             callback();
                         }
-                    }, scriplinkSetter.error);
+                    }, scriptlinkSetter.error);
                 },
 
                 getScriptlinks: function (callback) {
-                    scriplinkSetter.initClientContext(function () {
-                        var enumerator = scriplinkSetter.userCustomActions.getEnumerator();
+                    scriptlinkSetter.initClientContext(function () {
+                        var enumerator = scriptlinkSetter.userCustomActions.getEnumerator();
                         var result = [];
                         while (enumerator.moveNext()) {
                             var action = enumerator.get_current();
@@ -171,24 +171,24 @@
                             }
                         }
                         callback(result);
-                    }, scriplinkSetter.error);
+                    }, scriptlinkSetter.error);
                 },
 
                 initClientContext: function (success, failure) {
-                    if (!scriplinkSetter.clientContext) {
-                        scriplinkSetter.clientContext = new SP.ClientContext();
+                    if (!scriptlinkSetter.clientContext) {
+                        scriptlinkSetter.clientContext = new SP.ClientContext();
                     }
 
-                    if (!scriplinkSetter.site) {
-                        scriplinkSetter.site = scriplinkSetter.clientContext.get_site();
+                    if (!scriptlinkSetter.site) {
+                        scriptlinkSetter.site = scriptlinkSetter.clientContext.get_site();
                     }
 
-                    if (!scriplinkSetter.userCustomActions) {
-                        scriplinkSetter.userCustomActions = scriplinkSetter.site.get_userCustomActions();
-                        scriplinkSetter.clientContext.load(scriplinkSetter.userCustomActions);
+                    if (!scriptlinkSetter.userCustomActions) {
+                        scriptlinkSetter.userCustomActions = scriptlinkSetter.site.get_userCustomActions();
+                        scriptlinkSetter.clientContext.load(scriptlinkSetter.userCustomActions);
                     }
 
-                    scriplinkSetter.clientContext.executeQueryAsync(success, failure);
+                    scriptlinkSetter.clientContext.executeQueryAsync(success, failure);
                 },
 
                 error: function() {
@@ -215,11 +215,11 @@
                 return uuid.join('');
             };
 
-            var scriplinkSetter = intellipoint.scriplinkSetter;
+            var scriptlinkSetter = intellipoint.scriptlinkSetter;
         })();
 
         SP.SOD.executeFunc("sp.js", "SP.ClientContext", function () {
-            intellipoint.scriplinkSetter.init();
+            intellipoint.scriptlinkSetter.init();
         });
     </script>
 </asp:Content>
