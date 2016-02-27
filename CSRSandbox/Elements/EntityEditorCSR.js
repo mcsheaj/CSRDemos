@@ -4,6 +4,9 @@
  *     http://www.opensource.org/licenses/mit-license.php
  */
 (function ($) {
+    if (typeof (SPClientTemplates) === 'undefined')
+        return;
+
     var entityEditorFields = [
         'EntityEditor',
         'TagsCovered',
