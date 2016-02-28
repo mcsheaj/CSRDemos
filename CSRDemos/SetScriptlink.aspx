@@ -98,9 +98,9 @@
                     button.onclick = function (e) {
                         e = e || window.event;
                         scriptlinkSetter.deleteScriptlinks(function () {
-                            var scriptlinks = document.getElementById("scriptLinks").value.trim();
-                            if (scriptlinks.length > 0) {
-                                var files = scriptlinks.split("\n");
+                            var value = document.getElementById("scriptLinks").value.trim();
+                            if (value.length > 0) {
+                                var files = value.split("\n");
                                 for (var i = 0; i < files.length; i++) {
                                     var file = files[i];
                                     if (file.trim().length > 0) {
