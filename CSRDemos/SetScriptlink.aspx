@@ -53,6 +53,13 @@
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderMain' runat='server'>
     <div class='settingsheader'>Scriptlinks</div>
+    <div>
+        Scope: 
+            <select id="scope">
+                <option value="site">Site Collection</option>
+                <option value="web">Site</option>
+            </select>
+    </div>
     <div class="scriptLinksdiv">
         Script files to load:
         <div>
@@ -62,7 +69,7 @@
         </div>
     </div>
     <div class="buttun-div">
-        <button id="saveButton"  type="button" class="settings-button">Save</button>
+        <button id="saveButton" type="button" class="settings-button">Save</button>
     </div>
     <script type="text/javascript">
         (function () {
@@ -73,15 +80,19 @@
                 scriptlinks: [],
 
                 init: function () {
-                    scriptlinkSetter.getScriptlinks(function (links) {
-                        if (links) {
-                            var linksText = "";
-                            for (var i = 0; i < links.length; i++) {
-                                linksText += links[i] + "\n";
-                            }
-                            document.getElementById("scriptLinks").value = linksText;
+                    scriptlinkSetter.getScriptlinks(scriptlinkSetter.arrayToTextArea);
+
+                    document.getElementById("scope").onchange = function (e) {
+                        var scope = document.getElementById("scope").value;
+                        if (scope === "web") {
+                            scriptlinkSetter.userCustomActions = scriptlinkSetter.webUserCustomActions;
+                            scriptlinkSetter.getScriptlinks(scriptlinkSetter.arrayToTextArea);
                         }
-                    });
+                        else {
+                            scriptlinkSetter.userCustomActions = scriptlinkSetter.siteUserCustomActions;
+                            scriptlinkSetter.getScriptlinks(scriptlinkSetter.arrayToTextArea);
+                        }
+                    };
 
                     var button = document.getElementById("saveButton");
                     button.onclick = function (e) {
@@ -106,6 +117,16 @@
                             });
                         });
                     };
+                },
+
+                arrayToTextArea: function (lines) {
+                    if (lines) {
+                        var text = "";
+                        for (var i = 0; i < lines.length; i++) {
+                            text += lines[i] + "\n";
+                        }
+                        document.getElementById("scriptLinks").value = text;
+                    }
                 },
 
                 addScriptlinks: function (callback) {
@@ -183,16 +204,26 @@
                         scriptlinkSetter.site = scriptlinkSetter.clientContext.get_site();
                     }
 
-                    if (!scriptlinkSetter.userCustomActions) {
-                        scriptlinkSetter.userCustomActions = scriptlinkSetter.site.get_userCustomActions();
-                        scriptlinkSetter.clientContext.load(scriptlinkSetter.userCustomActions);
+                    if (!scriptlinkSetter.siteUserCustomActions) {
+                        scriptlinkSetter.siteUserCustomActions = scriptlinkSetter.site.get_userCustomActions();
+                        scriptlinkSetter.clientContext.load(scriptlinkSetter.siteUserCustomActions);
+                        scriptlinkSetter.userCustomActions = scriptlinkSetter.siteUserCustomActions;
+                    }
+
+                    if (!scriptlinkSetter.web) {
+                        scriptlinkSetter.web = scriptlinkSetter.clientContext.get_web();
+                    }
+
+                    if (!scriptlinkSetter.webUserCustomActions) {
+                        scriptlinkSetter.webUserCustomActions = scriptlinkSetter.web.get_userCustomActions();
+                        scriptlinkSetter.clientContext.load(scriptlinkSetter.webUserCustomActions);
                     }
 
                     scriptlinkSetter.clientContext.executeQueryAsync(success, failure);
                 },
 
-                error: function() {
-                    alert("oops...");
+                error: function () {
+                    alert("Oops, something bad happened...");
                 }
             };
 
