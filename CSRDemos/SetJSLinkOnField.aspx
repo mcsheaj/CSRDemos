@@ -100,14 +100,18 @@
                 // of column groups and columns, and attach event handlers.
                 ////////////////////////////////////////////////////////////////////////////////
                 init: function () {
+                    // get the context
                     jslinkSetter.ctx = new SP.ClientContext.get_current();
                     jslinkSetter.web = jslinkSetter.ctx.get_web();
 
+                    // load the site columns
                     jslinkSetter.fields = jslinkSetter.web.get_availableFields();
                     jslinkSetter.ctx.load(jslinkSetter.fields);
 
+                    // exec the query async
                     jslinkSetter.ctx.executeQueryAsync(
                         function () {
+                            // on success enumerate the fields and initialize the form controls
                             jslinkSetter.enumerateFields();
                             jslinkSetter.initGroupSelect();
                             jslinkSetter.initFieldSelect();
@@ -155,6 +159,7 @@
                         groupSelect.appendChild(o);
                     }
 
+                    // when the group changes, trim the fields select
                     groupSelect.onchange = function (e) {
                         e = e || event;
                         var fieldSelect = document.getElementById("fieldSelect");
@@ -188,6 +193,7 @@
                         fieldSelect.appendChild(o);
                     }
 
+                    // when the field changes, initialize the jslink text area and enable the button
                     fieldSelect.onchange = function (e) {
                         e = e || event;
                         if (e.target.value.length > 0) {
@@ -210,16 +216,19 @@
                     button.onclick = function (e) {
                         e = e || event;
                         var name = document.getElementById("fieldSelect").value;
+                        // get and load the field
                         // cannot be applied to Taxonomy fields, Related Items field, and Task 
                         // Outcome field, jsLink is read-only on those objects
                         var field = jslinkSetter.web.get_availableFields().getByInternalNameOrTitle(name);
                         jslinkSetter.ctx.load(field);
                         jslinkSetter.ctx.executeQueryAsync(
                             function () {
+                                // on success, set the jslink and update
                                 field.set_jsLink(document.getElementById("jslink").value.split("\n").join("|"));
                                 field.updateAndPushChanges(true);
                                 jslinkSetter.ctx.executeQueryAsync(
                                     function () {
+                                        // on success, update the cache and display a dialog
                                         jslinkSetter.options[name].jslink = document.getElementById("jslink").value.split("\n").join("|");
                                         alert("Successfully updated site column '" + name + "'.");
                                     },

@@ -76,12 +76,21 @@
             if (!window.intellipoint)
                 window.intellipoint = {};
 
+            ////////////////////////////////////////////////////////////////////////////////
+            // Form code behind class
+            ////////////////////////////////////////////////////////////////////////////////
             intellipoint.scriptlinkSetter = {
                 scriptlinks: [],
 
+                ////////////////////////////////////////////////////////////////////////////////
+                // Initialize the SharePoint object model context, and populate the script link
+                // text area with the current script links.
+                ////////////////////////////////////////////////////////////////////////////////
                 init: function () {
                     scriptlinkSetter.getScriptlinks(scriptlinkSetter.arrayToTextArea);
 
+                    // on scope change, modify and scriptlinkSetter.userCustomActions to point to 
+                    // the web or site as selected, and reinitialize the script link text area
                     document.getElementById("scope").onchange = function (e) {
                         var scope = document.getElementById("scope").value;
                         if (scope === "web") {
@@ -95,6 +104,8 @@
                     };
 
                     var button = document.getElementById("saveButton");
+                    // on click, set the script links; note: all existing script links are deleted 
+                    // and new ones are added from scratch, in the order they're listed
                     button.onclick = function (e) {
                         e = e || window.event;
                         scriptlinkSetter.deleteScriptlinks(function () {
@@ -119,16 +130,11 @@
                     };
                 },
 
-                arrayToTextArea: function (lines) {
-                    if (lines) {
-                        var text = "";
-                        for (var i = 0; i < lines.length; i++) {
-                            text += lines[i] + "\n";
-                        }
-                        document.getElementById("scriptLinks").value = text;
-                    }
-                },
-
+                ////////////////////////////////////////////////////////////////////////////////
+                // Add a script link for each line on the script link text area. Note: lines
+                // that do not begin with ~sitecollection and end with .js will be skipped
+                // intentionally.
+                ////////////////////////////////////////////////////////////////////////////////
                 addScriptlinks: function (callback) {
                     var found = false;
                     var suuid = Math.uuidFast("_");
@@ -141,7 +147,7 @@
                             newAction.set_scriptSrc(file + "?rev=" + suuid);
                             newAction.set_sequence(59000 + i);
                             newAction.set_title("Scriptlink Setter File #" + i);
-                            newAction.set_description("Generally used to load SPEasyForms AddOns.");
+                            newAction.set_description("Set programmaically by SetScriptlink.aspx.");
                             newAction.update();
                         }
                     }
@@ -154,6 +160,9 @@
                     }
                 },
 
+                ////////////////////////////////////////////////////////////////////////////////
+                // Delete script links who's titles look like they were set by me.
+                ////////////////////////////////////////////////////////////////////////////////
                 deleteScriptlinks: function (callback) {
                     scriptlinkSetter.initClientContext(function () {
                         var enumerator = scriptlinkSetter.userCustomActions.getEnumerator();
@@ -178,23 +187,33 @@
                     }, scriptlinkSetter.error);
                 },
 
+                ////////////////////////////////////////////////////////////////////////////////
+                // Get script links who's titles look like they were set by me.
+                ////////////////////////////////////////////////////////////////////////////////
                 getScriptlinks: function (callback) {
                     scriptlinkSetter.initClientContext(function () {
                         var enumerator = scriptlinkSetter.userCustomActions.getEnumerator();
-                        var result = [];
+                        var tmp = [], result = [];
                         while (enumerator.moveNext()) {
                             var action = enumerator.get_current();
                             if (/^Scriptlink Setter File #/.test(action.get_title())) {
                                 var path = action.get_scriptSrc();
                                 if (path.indexOf("?") > 0)
                                     path = path.substr(0, path.indexOf("?"));
-                                result.push(path);
+                                tmp.push({ p: path, s: action.get_sequence() });
                             }
+                        }
+                        tmp = tmp.sort(function (a, b) { if (a.s < b.s) return -1; if (a.s > b.s) return 1; return 0 });
+                        for (var i = 0; i < tmp.length; i++) {
+                            result.push(tmp[i].p);
                         }
                         callback(result);
                     }, scriptlinkSetter.error);
                 },
 
+                ////////////////////////////////////////////////////////////////////////////////
+                // Initialize the sharepoint object model, including site, web, and userCustomActions.
+                ////////////////////////////////////////////////////////////////////////////////
                 initClientContext: function (success, failure) {
                     if (!scriptlinkSetter.clientContext) {
                         scriptlinkSetter.clientContext = new SP.ClientContext();
@@ -222,11 +241,35 @@
                     scriptlinkSetter.clientContext.executeQueryAsync(success, failure);
                 },
 
+                ////////////////////////////////////////////////////////////////////////////////
+                // Failure callback for all async calls.
+                ////////////////////////////////////////////////////////////////////////////////
                 error: function () {
                     alert("Oops, something bad happened...");
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Utility method to convert an array of links into text area input.
+                ////////////////////////////////////////////////////////////////////////////////
+                arrayToTextArea: function (lines) {
+                    if (lines) {
+                        var text = "";
+                        for (var i = 0; i < lines.length; i++) {
+                            text += lines[i] + "\n";
+                        }
+                        document.getElementById("scriptLinks").value = text;
+                    }
                 }
             };
 
+            /*!
+                Math.uuid.js 
+                http://www.broofa.com
+                mailto:robert@broofa.com
+                
+                Copyright (c) 2010 Robert Kieffer
+                Dual licensed under the MIT and GPL licenses.
+                */
             var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
             Math.uuidFast = function (separator) {
                 var chars = CHARS, uuid = new Array(36), rnd = 0, r;

@@ -101,14 +101,18 @@
                 // of content type groups and content types, and attach event handlers.
                 ////////////////////////////////////////////////////////////////////////////////
                 init: function () {
+                    // get the context
                     jslinkSetter.ctx = new SP.ClientContext.get_current();
                     jslinkSetter.web = jslinkSetter.ctx.get_web();
 
+                    // load available content types
                     jslinkSetter.contentTypes = jslinkSetter.web.get_availableContentTypes();
                     jslinkSetter.ctx.load(jslinkSetter.contentTypes);
 
+                    // exec the query async
                     jslinkSetter.ctx.executeQueryAsync(
                         function () {
+                            // on success, enumerate the content types and initialize the form controls
                             jslinkSetter.enumerateContentTypes();
                             jslinkSetter.initGroupSelect();
                             jslinkSetter.initContentTypeSelect();
@@ -157,6 +161,7 @@
                         groupSelect.appendChild(o);
                     }
 
+                    // when the group changes, trim the content type select
                     groupSelect.onchange = function (e) {
                         e = e || event;
                         var contentTypeSelect = document.getElementById("contentTypeSelect");
@@ -190,6 +195,7 @@
                         contentTypeSelect.appendChild(o);
                     }
 
+                    // when the content type changes, initialize the jslink text area
                     contentTypeSelect.onchange = function (e) {
                         e = e || event;
                         if (e.target.value.length > 0) {
@@ -217,7 +223,7 @@
                         var contentType;
                         jslinkSetter.ctx.executeQueryAsync(
                             function () {
-                                // no convenient getByTitle method exists for content types
+                                // no convenient getByTitle method exists for content types, find the hard way
                                 var enumerator = jslinkSetter.contentTypes.getEnumerator();
                                 while (enumerator.moveNext()) {
                                     var current = enumerator.get_current();
@@ -226,11 +232,13 @@
                                         break;
                                     }
                                 }
+                                // set jslink and update, note: true or false, no all changes are pushed down
                                 // set jslink not supported for survey or event content types
                                 contentType.set_jsLink(document.getElementById("jslink").value.split("\n").join("|"));
                                 contentType.update(true);
                                 jslinkSetter.ctx.executeQueryAsync(
                                     function () {
+                                        // on success, update the cache and display a dialog
                                         jslinkSetter.options[name].jslink = document.getElementById("jslink").value.split("\n").join("|");
                                         alert("Successfully updated content type '" + name + "'.");
                                     },
