@@ -231,6 +231,7 @@
                                 contentType.update(true);
                                 jslinkSetter.ctx.executeQueryAsync(
                                     function () {
+                                        jslinkSetter.options[name].jslink = document.getElementById("jslink").value.split("\n").join("|");
                                         alert("Successfully updated content type '" + name + "'.");
                                     },
                                     function () {

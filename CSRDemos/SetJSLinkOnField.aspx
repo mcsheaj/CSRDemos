@@ -220,6 +220,7 @@
                                 field.updateAndPushChanges(true);
                                 jslinkSetter.ctx.executeQueryAsync(
                                     function () {
+                                        jslinkSetter.options[name].jslink = document.getElementById("jslink").value.split("\n").join("|");
                                         alert("Successfully updated site column '" + name + "'.");
                                     },
                                     function () {
