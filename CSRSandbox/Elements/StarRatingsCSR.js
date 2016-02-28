@@ -4,15 +4,13 @@
  *     http://www.opensource.org/licenses/mit-license.php
  */
 (function ($) {
+    // test is form with client side rendering
     if (typeof (SPClientTemplates) === 'undefined')
         return;
 
-    var starRatingFields = [
-        'StarRating',
-        'Content1',
-        'Relevance',
-        'Presentation'
-    ];
+    // test at least one field is configured to use the star rating client side rendering
+    if (typeof ($.starRatingFields) !== 'object' || !$.starRatingFields.length)
+        return;
 
     /*
      * Implementation class for the overrides.
@@ -57,6 +55,12 @@
                 'class': 'ms-formvalidation ms-csrformvalidation'
             }));
 
+            // register a callback to return the current value
+            current.registerGetValueCallback(
+                current.fieldName,
+                $.starRatingImpl.getFieldValue.bind(null, current.fieldName));
+
+            // register validators
             $.starRatingImpl.registerValidators(current);
 
             return result.html();
@@ -66,11 +70,6 @@
          * Setup validation handlers on the new and edit forms.
          */
         registerValidators: function (current) {
-            // register a callback to return the current value
-            current.registerGetValueCallback(
-                current.fieldName,
-                $.starRatingImpl.getFieldValue.bind(null, current.fieldName));
-
             // create a validator set
             var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
             fieldValidators.RegisterValidator(new starRatingsFieldValidator());
@@ -142,7 +141,6 @@
         };
     };
 
-
     /*
      * Create an empty overrides object.
      */
@@ -155,7 +153,7 @@
     /*
      * Add an overrides object for each field we want to customize.
      */
-    $.each($(starRatingFields), function (i, v) {
+    $.each($($.starRatingFields), function (i, v) {
         starRatingOverrides.Templates.Fields[v] = {
             'View': $.starRatingImpl.displayMethod,
             'DisplayForm': $.starRatingImpl.displayMethod,

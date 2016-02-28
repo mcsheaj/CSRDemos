@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="..\CSRSandbox\Elements\CSRConfig.js">
+      <Link>CSRConfig.js</Link>
+    </Content>
     <Content Include="..\CSRSandbox\Elements\entityeditor.css">
       <Link>entityeditor.css</Link>
     </Content>

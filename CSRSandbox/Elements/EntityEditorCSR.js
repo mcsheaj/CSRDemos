@@ -4,14 +4,13 @@
  *     http://www.opensource.org/licenses/mit-license.php
  */
 (function ($) {
+    // test is form with client side rendering
     if (typeof (SPClientTemplates) === 'undefined')
         return;
 
-    var entityEditorFields = [
-        'EntityEditor',
-        'TagsCovered',
-        'TagsNotCovered'
-    ];
+    // test at least one field is configured to use the entity editor client side rendering
+    if (typeof ($.entityEditorFields) !== 'object' || !$.entityEditorFields.length)
+        return;
 
     /*
      * Implementation class for the overrides.
@@ -218,7 +217,7 @@
     /*
      * Add an overrides object for each field we want to customize.
      */
-    $.each($(entityEditorFields), function (i, v) {
+    $.each($($.entityEditorFields), function (i, v) {
         entityEditorOverrides.Templates.Fields[v] = {
             'NewForm': $.entityEditorImpl.inputMethod,
             'EditForm': $.entityEditorImpl.inputMethod
@@ -230,7 +229,7 @@
      */
     entityEditorOverrides.OnPostRender = function (ctx) {
         var fieldName = ctx.ListSchema.Field[0].Name;
-        if ($.inArray(fieldName, entityEditorFields) > -1) {
+        if ($.inArray(fieldName, $.entityEditorFields) > -1) {
             var div = $("#" + fieldName + "EntityEditor");
             div.find("input.csrdemos-entityeditorinput").autocomplete({
                 source: $.entityEditorImpl.source[fieldName].sort(),

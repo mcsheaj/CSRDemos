@@ -37,6 +37,7 @@
     <None Include="Package\Package.ddf" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Elements\CSRConfig.js" />
     <Content Include="Elements\entityeditor.css" />
     <Content Include="Elements\images\ui-bg_glass_55_fbf9ee_1x400.png" />
     <Content Include="Elements\images\ui-bg_glass_65_ffffff_1x400.png" />
