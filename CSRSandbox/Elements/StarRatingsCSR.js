@@ -9,7 +9,7 @@
         return;
 
     // test at least one field is configured to use the star rating client side rendering
-    if (typeof ($.starRatingFields) !== 'object' || !$.starRatingFields.length)
+    if (typeof ($.csrConfig) !== 'object' || typeof ($.csrConfig.starRatingFields) !== 'object' || !$.csrConfig.starRatingFields.length)
         return;
 
     /*
@@ -153,7 +153,7 @@
     /*
      * Add an overrides object for each field we want to customize.
      */
-    $.each($($.starRatingFields), function (i, v) {
+    $.each($($.csrConfig.starRatingFields), function (i, v) {
         starRatingOverrides.Templates.Fields[v] = {
             'View': $.starRatingImpl.displayMethod,
             'DisplayForm': $.starRatingImpl.displayMethod,

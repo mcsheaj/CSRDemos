@@ -9,7 +9,7 @@
         return;
 
     // test at least one field is configured to use the entity editor client side rendering
-    if (typeof ($.entityEditorFields) !== 'object' || !$.entityEditorFields.length)
+    if (typeof ($.csrConfig) !== 'object' || typeof ($.csrConfig.entityEditorFields) !== 'object' || !$.csrConfig.entityEditorFields.length)
         return;
 
     /*
@@ -267,7 +267,7 @@
     /*
      * Add an overrides object for each field we want to customize.
      */
-    $.each($($.entityEditorFields), function (i, v) {
+    $.each($($.csrConfig.entityEditorFields), function (i, v) {
         entityEditorOverrides.Templates.Fields[v] = {
             'NewForm': $.entityEditorImpl.inputMethod,
             'EditForm': $.entityEditorImpl.inputMethod
@@ -279,7 +279,7 @@
      */
     entityEditorOverrides.OnPostRender = function (ctx) {
         var fieldName = ctx.ListSchema.Field[0].Name;
-        if ($.inArray(fieldName, $.entityEditorFields) > -1) {
+        if ($.inArray(fieldName, $.csrConfig.entityEditorFields) > -1) {
             var div = $("#" + fieldName + "EntityEditor");
             div.find("input.csrdemos-entityeditorinput").autocomplete({
                 source: $.entityEditorImpl.source[fieldName].sort(),

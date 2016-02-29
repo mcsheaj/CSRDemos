@@ -18,13 +18,13 @@ input.csrdemos-entityeditorinput {
     position: relative;
     float: left;
     border: none;
-    padding: 5px;
 }
 
 .csrdemos-entity {
     display: block;
-    padding: 3px 7px 4px 8px;
-    margin: 1px 2px;
+    padding: 2px 3px 1px 5px;
+    margin-right: 2px;
+    margin-bottom: 1px;
     position: relative;
     float: left;
     background-color: #eee;
