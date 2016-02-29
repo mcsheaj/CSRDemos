@@ -5,11 +5,9 @@
 <%@ Register TagPrefix="SharePoint" Namespace="Microsoft.SharePoint.WebControls" Assembly="Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" %>
 <%@ Import Namespace="Microsoft.SharePoint" %>
 <asp:Content ContentPlaceHolderID='PlaceHolderPageTitle' runat='server'>
-    <SharePoint:ProjectProperty Property='Title' runat='server'>- SharePoint Easy Forms Site Settings</SharePoint:ProjectProperty>
+    Scriptlink Settings
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderPageTitleInTitleArea' runat='server'>
-    <span class='ms-WikiPageNameEditor-Display' id='listBreadCrumb'></span>
-    <span class='ms-WikiPageNameEditor-Display' id='wikiPageNameDisplay'></span>
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderAdditionalPageHead' runat='server'>
     <meta name='CollaborationServer' content='SharePoint Team Web Site' />
@@ -271,7 +269,7 @@
                 Dual licensed under the MIT and GPL licenses.
                 */
             var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-            Math.uuidFast = function (separator) {
+            Math.uuidFast = function (separator) { // modified to allow a separator to be passed in
                 var chars = CHARS, uuid = new Array(36), rnd = 0, r;
                 separator = separator || '-';
                 for (var i = 0; i < 36; i++) {

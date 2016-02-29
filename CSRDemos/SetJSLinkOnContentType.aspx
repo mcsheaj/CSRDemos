@@ -13,8 +13,6 @@
 -->
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderPageTitleInTitleArea' runat='server'>
-    <span class='ms-WikiPageNameEditor-Display' id='listBreadCrumb'></span>
-    <span class='ms-WikiPageNameEditor-Display' id='wikiPageNameDisplay'></span>
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderAdditionalPageHead' runat='server'>
 
