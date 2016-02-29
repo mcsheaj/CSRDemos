@@ -17,87 +17,46 @@
      */
     $.entityEditorImpl = {
         source: {},
+        schema: {},
 
         /*
          * Implementation for the new and edit forms.
          */
         inputMethod: function (ctx) {
             $.entityEditorImpl.getCss();
-
             var current = SPClientTemplates.Utility.GetFormContextForCurrentField(ctx);
 
-            // construct the html for our control
-            var result = $('<p/>');
-            var entityEditor = $('<div/>', {
-                'id': current.fieldName + 'EntityEditor',
-                'class': 'ui-helper-clearfix csrdemos-entityeditor',
-                'data-fieldname': current.fieldName
-            });
-            result.append(entityEditor);
-
-            // get the fields list of potential values from the field schema
+            // save some stuff from the schema we're going to need later
             $.entityEditorImpl.source[current.fieldName] = current.fieldSchema.MultiChoices;
+            $.entityEditorImpl.schema[current.fieldName] = current.fieldSchema;
 
-            // if the field has a current value, initilize the control with it
-            if (ctx.CurrentFieldValue.length > 0) {
-                // parse the values into an array
-                var values = ctx.CurrentFieldValue.replace(/^;#/, '').replace(/;#$/, '').split(';#');
+            // construct the outer html for our control
+            var result = $.entityEditorImpl.constructOuterContainer(current);
+            var entityEditor = result.find(".csrdemos-entityeditor");
 
-                // for each value, push a span into the entity editor div
-                $.each(values, function (idx, value) {
-                    // add an anchor tag to remove this entity
-                    var anchor = $('<a/>', {
-                        "title": "Remove Entity",
-                        "data-fieldname": current.fieldName,
-                        "data-value": value,
-                        "class": "csrdemos-remove",
-                        "href": "#"
-                    }).text("x");
+            // initialize the editor with current values
+            $.entityEditorImpl.constructInitialEntities(ctx, current, entityEditor);
 
-                    // create the span from the value and the anchor
-                    entityEditor.append($("<span/>", {
-                        'title': value,
-                        'class': 'csrdemos-entity'
-                    }).html(value + anchor[0].outerHTML));
-
-                    // remove the value from the list of potential values, so autocomplete won't allow duplicates
-                    if ($.inArray(value, $.entityEditorImpl.source[current.fieldName]) > -1) {
-                        $.entityEditorImpl.source[current.fieldName].splice(
-                            $.inArray(value, $.entityEditorImpl.source[current.fieldName]), 1);
-                    }
-                });
-            }
-
-            // add an input for the user to type into, this is the autocomplete input
-            var input = $('<input/>', {
-                'id': current.fieldName + 'EntityEditorInput',
-                'name': current.fieldName + 'EntityEditorInput',
-                'type': 'text',
-                'class': 'csrdemos-entityeditorinput'
-            });
-            entityEditor.append(input);
-
-            // finally, append a span where we'll output any validation errors
-            result.append($('<span/>', {
-                'id': current.fieldName + 'EntityEditorError',
-                'class': 'ms-formvalidation ms-csrformvalidation'
-            }));
+            // add the text input to the entitiy edity div
+            $.entityEditorImpl.constructInput(ctx, current, entityEditor);
 
             // register a callback to return the current value
             current.registerGetValueCallback(
                 current.fieldName,
                 $.entityEditorImpl.getFieldValue.bind($.entityEditorImpl, current.fieldName));
 
+            // register validators for this control
+            $.entityEditorImpl.registerValidators(current);
+
             // add a deferred event handler for the remove entity anchor
             $(".ms-formtable").on("click", ".csrdemos-remove", function (e) {
                 e.stopImmediatePropagation();
                 var fieldName = $(this).attr("data-fieldname");
-                var value = $(this).attr("data-value");
-                var entityEditor = $(this).closest(".csrdemos-entityeditor");
                 var entityEditorInput = $(this).closest(".csrdemos-entityeditor").find("input.csrdemos-entityeditorinput");
-                $.entityEditorImpl.source[fieldName].push(value);
-                entityEditorInput.autocomplete("option", "source", $.entityEditorImpl.source[fieldName].sort()).focus();
                 $(this).parent().remove();
+                $.entityEditorImpl.source[fieldName].push($(this).attr("data-value"));
+                entityEditorInput.show();
+                entityEditorInput.autocomplete("option", "source", $.entityEditorImpl.source[fieldName].sort()).focus();
                 return false;
             });
 
@@ -107,10 +66,10 @@
         /*
          * Setup validation for the input form.
          */
-        registerValidators: function(current) {
+        registerValidators: function (current) {
             // create a validator set
             var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
-            fieldValidators.RegisterValidator(new entityEditorFieldValidator());
+            fieldValidators.RegisterValidator(new noFillinValidator(current.fieldSchema));
 
             // if required, add a required field validator
             if (current.fieldSchema.Required) {
@@ -119,7 +78,7 @@
 
             // register a callback method for the validators
             current.registerValidationErrorCallback(current.fieldName, function (error) {
-                $('#' + current.fieldName + 'Error').attr('role', 'alert').html(error.errorMessage);
+                $('#' + current.fieldName + 'EntityEditorError').attr('role', 'alert').html(error.errorMessage);
             });
 
             // register the validators
@@ -137,12 +96,17 @@
                 result.push($(this).find("a").attr("data-value"));
             });
 
-            var entityEditorInput = entityEditorDiv.find(".csrdemos-entityeditorinput");
-            if (entityEditorInput.val().length > 0) {
-                result.push(entityEditorInput.val());
+            if ($.entityEditorImpl.schema[fieldName].FillInChoice === false) {
+                var entityEditorInput = entityEditorDiv.find(".csrdemos-entityeditorinput");
+                if (entityEditorInput.val().length > 0) {
+                    result.push(entityEditorInput.val());
+                }
             }
 
-            return ';#' + result.join(';#') + ';#';
+            if ($.entityEditorImpl.schema[fieldName].FieldType === "MultiChoice") {
+                return ';#' + result.join(';#') + ';#';
+            }
+            return result[0];
         },
 
         /*
@@ -182,26 +146,112 @@
 
             $.entityEditorImpl.source[fieldName].splice(
                 $.inArray(value, $.entityEditorImpl.source[fieldName]), 1);
-            $(entityEditorInput).autocomplete(
+
+            var $input = $(entityEditorInput);
+            $input.autocomplete(
                 "option", "source", $.entityEditorImpl.source[fieldName].sort());
-            $(entityEditorInput).val("");
+            $input.val("");
+            if ($.entityEditorImpl.schema[fieldName].FieldType !== "MultiChoice") {
+                $input.hide();
+            }
 
             return false;
         },
+
+        /*
+         * Construct the outer div for the entity editor.
+         */
+        constructOuterContainer: function (current) {
+            var result = $('<p/>');
+            var entityEditor = $('<div/>', {
+                'id': current.fieldName + 'EntityEditor',
+                'class': 'ui-helper-clearfix csrdemos-entityeditor',
+                'data-fieldname': current.fieldName
+            });
+            result.append(entityEditor);
+            return result;
+        },
+
+        /*
+         * Add a span for each entity in ctx.CurrentFieldValue.
+         */
+        constructInitialEntities: function (ctx, current, entityEditor) {
+            // if the field has a current value, initilize the control with it
+            if (ctx.CurrentFieldValue.length > 0) {
+                // parse the values into an array
+                var values = ctx.CurrentFieldValue.replace(/^;#/, '').replace(/;#$/, '').split(';#');
+
+                // for each value, push a span into the entity editor div
+                $.each(values, function (idx, value) {
+                    // add an anchor tag to remove this entity
+                    var anchor = $('<a/>', {
+                        "title": "Remove Entity",
+                        "data-fieldname": current.fieldName,
+                        "data-value": value,
+                        "class": "csrdemos-remove",
+                        "href": "#"
+                    }).text("x");
+
+                    // create the span from the value and the anchor
+                    entityEditor.append($("<span/>", {
+                        'title': value,
+                        'class': 'csrdemos-entity'
+                    }).html(value + anchor[0].outerHTML));
+
+                    // remove the value from the list of potential values, so autocomplete won't allow duplicates
+                    if ($.inArray(value, $.entityEditorImpl.source[current.fieldName]) > -1) {
+                        $.entityEditorImpl.source[current.fieldName].splice(
+                            $.inArray(value, $.entityEditorImpl.source[current.fieldName]), 1);
+                    }
+                });
+            }
+        },
+
+        /*
+         * Add the input control to the entity editor
+         */
+        constructInput: function (ctx, current, entityEditor) {
+            // add an input for the user to type into, this is the autocomplete input
+            var input = $('<input/>', {
+                'id': current.fieldName + 'EntityEditorInput',
+                'name': current.fieldName + 'EntityEditorInput',
+                'type': 'text',
+                'class': 'csrdemos-entityeditorinput'
+            });
+            if ($.entityEditorImpl.schema[current.fieldName].FieldType !== "MultiChoice" && ctx.CurrentFieldValue.length > 0) {
+                input.hide();
+            }
+            entityEditor.append(input);
+
+            // finally, append a span where we'll output any validation errors
+            entityEditor.parent().append($('<span/>', {
+                'id': current.fieldName + 'EntityEditorError',
+                'class': 'ms-formvalidation ms-csrformvalidation'
+            }));
+        }
     };
 
     /*
-     * A custom validator is just an object with a Validate method. It takes in the
-     * value and returns an error based on whatever criteria it chooses; in this case
-     * berating people for a wishy-washy answer (i.e. 3).
+     * A custom validator is just an object with a Validate method. 
      */
-    var entityEditorFieldValidator = function () {
-        entityEditorFieldValidator.prototype.Validate = function (value) {
+    var noFillinValidator = function (schema) {
+        var obj = new Object();
+        obj.schema = schema;
+        obj.Validate = function (value) {
             var isError = false;
             var errorMessage = '';
-            // TBD
+
+            if (this.schema.FillInChoice === false) {
+                var entityInput = $('#' + this.schema.Name + 'EntityEditor').find("input.csrdemos-entityeditorinput");
+                if (entityInput.val().length > 0) {
+                    isError = true;
+                    errorMessage = "'"+value+"' is not resolved; Fill in choices are not support, so all entities must be resolved.";
+                }
+            }
+
             return new SPClientForms.ClientValidation.ValidationResult(isError, errorMessage);
         };
+        return obj;
     };
 
     /*

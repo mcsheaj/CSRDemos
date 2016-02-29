@@ -3,7 +3,8 @@
     $.entityEditorFields = [
         'EntityEditor',
         'TagsCovered',
-        'TagsNotCovered'
+        'TagsNotCovered',
+        'SingleTag'
     ];
 
     $.starRatingFields = [
