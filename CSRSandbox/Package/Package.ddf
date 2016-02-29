@@ -9,15 +9,10 @@ Manifest.xml
 ..\Elements\FieldType.xml
 ..\Elements\Module.xml
 ..\Elements\jquery.js
-..\Elements\StarRatingsCSR.js
-..\Elements\stars.png
-..\Elements\starratings.css
 
 ..\Elements\jquery-ui.js
 ..\Elements\jquery-ui.css
 ..\Elements\jquery-ui.theme.css
-..\Elements\EntityEditorCSR.js
-..\Elements\entityeditor.css
 ..\Elements\images\ui-bg_glass_55_fbf9ee_1x400.png
 ..\Elements\images\ui-bg_glass_65_ffffff_1x400.png
 ..\Elements\images\ui-bg_glass_75_dadada_1x400.png
@@ -29,4 +24,13 @@ Manifest.xml
 ..\Elements\images\ui-icons_454545_256x240.png
 ..\Elements\images\ui-icons_888888_256x240.png
 ..\Elements\images\ui-icons_cd0a0a_256x240.png
+
+..\..\CSRDemos\CSRConfig.js
+..\..\CSRDemos\StarRatingsCSR.js
+..\..\CSRDemos\stars.png
+..\..\CSRDemos\starratings.css
+..\..\CSRDemos\EntityEditorCSR.js
+..\..\CSRDemos\entityeditor.css
+
+
 

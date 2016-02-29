@@ -2,6 +2,7 @@
 <Elements xmlns="http://schemas.microsoft.com/sharepoint/">
     <Module Name="CSRSandbox" Url="Style Library">
         <File Path="jquery.js" Url="jquery.js" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
+        <File Path="CSRConfig.js" Url="CSRConfig.js" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
         <File Path="StarRatingsCSR.js" Url="StarRatingsCSR.js" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
         <File Path="stars.png" Url="stars.png" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />
         <File Path="starratings.css" Url="starratings.css" Type="GhostableInLibrary" IgnoreIfAlreadyExists="True" />

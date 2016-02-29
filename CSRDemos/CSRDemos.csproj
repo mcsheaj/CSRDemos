@@ -30,24 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="..\CSRSandbox\Elements\CSRConfig.js">
-      <Link>CSRConfig.js</Link>
-    </Content>
-    <Content Include="..\CSRSandbox\Elements\entityeditor.css">
-      <Link>entityeditor.css</Link>
-    </Content>
-    <Content Include="..\CSRSandbox\Elements\EntityEditorCSR.js">
-      <Link>EntityEditorCSR.js</Link>
-    </Content>
-    <Content Include="..\CSRSandbox\Elements\starratings.css">
-      <Link>starratings.css</Link>
-    </Content>
-    <Content Include="..\CSRSandbox\Elements\StarRatingsCSR.js">
-      <Link>StarRatingsCSR.js</Link>
-    </Content>
-    <Content Include="..\CSRSandbox\Elements\stars.png">
-      <Link>stars.png</Link>
-    </Content>
+    <Content Include="CSRConfig.js" />
+    <Content Include="entityeditor.css" />
+    <Content Include="EntityEditorCSR.js" />
     <Content Include="images\ui-bg_glass_55_fbf9ee_1x400.png" />
     <Content Include="images\ui-bg_glass_65_ffffff_1x400.png" />
     <Content Include="images\ui-bg_glass_75_dadada_1x400.png" />
@@ -69,6 +54,9 @@
     </Content>
     <Content Include="SetJSLinkOnField.aspx" />
     <Content Include="SetScriptlink.aspx" />
+    <Content Include="starratings.css" />
+    <Content Include="StarRatingsCSR.js" />
+    <Content Include="stars.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

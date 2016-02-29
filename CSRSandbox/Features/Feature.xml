@@ -10,6 +10,7 @@
         <ElementManifest Location="Module.xml" />
         <ElementManifest Location="FieldType.xml" />
         <ElementFile Location="jquery.js" />
+        <ElementFile Location="CSRConfig.js" />
         <ElementFile Location="StarRatingsCSR.js" />
         <ElementFile Location="stars.png" />
         <ElementFile Location="starratings.css" />

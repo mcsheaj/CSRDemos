@@ -37,8 +37,24 @@
     <None Include="Package\Package.ddf" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Elements\CSRConfig.js" />
-    <Content Include="Elements\entityeditor.css" />
+    <Content Include="..\CSRDemos\CSRConfig.js">
+      <Link>Elements\CSRConfig.js</Link>
+    </Content>
+    <Content Include="..\CSRDemos\entityeditor.css">
+      <Link>Elements\entityeditor.css</Link>
+    </Content>
+    <Content Include="..\CSRDemos\EntityEditorCSR.js">
+      <Link>Elements\EntityEditorCSR.js</Link>
+    </Content>
+    <Content Include="..\CSRDemos\starratings.css">
+      <Link>Elements\starratings.css</Link>
+    </Content>
+    <Content Include="..\CSRDemos\StarRatingsCSR.js">
+      <Link>Elements\StarRatingsCSR.js</Link>
+    </Content>
+    <Content Include="..\CSRDemos\stars.png">
+      <Link>Elements\stars.png</Link>
+    </Content>
     <Content Include="Elements\images\ui-bg_glass_55_fbf9ee_1x400.png" />
     <Content Include="Elements\images\ui-bg_glass_65_ffffff_1x400.png" />
     <Content Include="Elements\images\ui-bg_glass_75_dadada_1x400.png" />
@@ -57,13 +73,9 @@
     <Content Include="Elements\Module.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Elements\starratings.css" />
-    <Content Include="Elements\StarRatingsCSR.js" />
     <Content Include="Elements\FieldType.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Elements\stars.png" />
-    <Content Include="Elements\EntityEditorCSR.js" />
     <Content Include="Features\Feature.xml" />
     <Content Include="Package\Manifest.xml">
       <SubType>Designer</SubType>
