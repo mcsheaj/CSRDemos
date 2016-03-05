@@ -135,7 +135,7 @@
                 ////////////////////////////////////////////////////////////////////////////////
                 addScriptlinks: function (callback) {
                     var found = false;
-                    var suuid = Math.uuidFast("_");
+                    var suuid = SP.Guid.newGuid();
                     for (var i = 0; i < scriptlinkSetter.scriptlinks.length; i++) {
                         var file = scriptlinkSetter.scriptlinks[i];
                         if (/\.js$/.test(file) && /^~sitecollection/.test(file)) {
@@ -258,33 +258,6 @@
                         document.getElementById("scriptLinks").value = text;
                     }
                 }
-            };
-
-            /*!
-                Math.uuid.js 
-                http://www.broofa.com
-                mailto:robert@broofa.com
-                
-                Copyright (c) 2010 Robert Kieffer
-                Dual licensed under the MIT and GPL licenses.
-                */
-            var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-            Math.uuidFast = function (separator) { // modified to allow a separator to be passed in
-                var chars = CHARS, uuid = new Array(36), rnd = 0, r;
-                separator = separator || '-';
-                for (var i = 0; i < 36; i++) {
-                    if (i == 8 || i == 13 || i == 18 || i == 23) {
-                        uuid[i] = separator;
-                    } else if (i == 14) {
-                        uuid[i] = '4';
-                    } else {
-                        if (rnd <= 0x02) rnd = 0x2000000 + (Math.random() * 0x1000000) | 0;
-                        r = rnd & 0xf;
-                        rnd = rnd >> 4;
-                        uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
-                    }
-                }
-                return uuid.join('');
             };
 
             var scriptlinkSetter = intellipoint.scriptlinkSetter;
