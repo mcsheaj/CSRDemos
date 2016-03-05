@@ -49,11 +49,16 @@
     <Content Include="jquery-ui.theme.css" />
     <Content Include="jquery.js" />
     <Content Include="ScriptLinks.txt" />
+    <Content Include="SetCSRConfig.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="SetJSLinkOnContentType.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="SetJSLinkOnField.aspx" />
-    <Content Include="SetScriptlink.aspx" />
+    <Content Include="SetScriptlink.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="starratings.css" />
     <Content Include="StarRatingsCSR.js" />
     <Content Include="stars.png" />
