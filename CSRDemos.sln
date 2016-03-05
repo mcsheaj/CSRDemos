@@ -7,8 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSRDemos", "CSRDemos\CSRDem
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A315FF2B-8C20-4176-B707-E569B4E44EB6}"
 	ProjectSection(SolutionItems) = preProject
+		CSRConfig.js = CSRConfig.js
 		license.txt = license.txt
 		readme.txt = readme.txt
+		StarRatingCSR.js = StarRatingCSR.js
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSRSandbox", "CSRSandbox\CSRSandbox.csproj", "{CCC81D90-A435-45C4-9DC4-4EE375E60443}"
