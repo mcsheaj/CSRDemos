@@ -11,6 +11,9 @@
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderAdditionalPageHead' runat='server'>
     <meta name='CollaborationServer' content='SharePoint Team Web Site' />
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="jquery-ui.js"></script>
+    <script type="text/javascript" src="CSRConfig.js"></script>
     <style type="text/css">
         .nobr {
             white-space: nowrap;

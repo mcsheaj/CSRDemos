@@ -22,16 +22,15 @@
         displayMethod: function (ctx) {
             $.starRatingImpl.getCss();
 
-            var result = $('<div/>', {
+            var result = $('<p />');
+            result.append($('<div/>', {
                 'id': ctx.CurrentFieldSchema.Name,
-                'class': 'csrdemos-stars',
+                //'class': 'csrdemos-stars csrdemos-' + ctx.CurrentFieldValue + 'stars',
+                'class': 'csrdemos-stars csrdemos-' + ctx.CurrentItem[ctx.CurrentFieldSchema.Name] + 'stars',
                 'data-value': ctx.CurrentItem[ctx.CurrentFieldSchema.Name]
-            });
+            }));
 
-            //result.addClass('csrdemos-' + ctx.CurrentFieldValue + 'stars');
-            result.addClass('csrdemos-' + ctx.CurrentItem[ctx.CurrentFieldSchema.Name] + 'stars');
-
-            return result.prop('outerHTML');
+            return result.html();
         },
 
         /*
@@ -101,7 +100,7 @@
         getCss: function () {
             if (!$('body').attr('data-starcssadded')) {
                 var css = _spPageContextInfo.siteAbsoluteUrl +
-                    '/style library/starratings.css';
+                    '/Style%20Library/starratings.css';
                 $('head').append(
                     '<link rel="stylesheet" type="text/css" href="' + css + '">');
                 $('body').attr('data-starcssadded', 'true');
@@ -165,10 +164,10 @@
     // register my template overrides
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
         // MDS is enabled
-        var url = _spPageContextInfo.siteServerRelativeUrl +
-            '/style library/starratingscsr.js';
+        var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
+            '/Style%20Library/StarRatingsCSR.js';
         // register a callback to register the templates on partial page loads
-        RegisterModuleInit(url.toLowerCase(), function () {
+        RegisterModuleInit(url, function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(starRatingOverrides);
         });
         // also just register for full page loads (F5/refresh)

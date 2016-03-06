@@ -115,11 +115,11 @@
         getCss: function () {
             if (!$('body').attr('data-entityeditorcssadded')) {
                 var css = _spPageContextInfo.siteAbsoluteUrl +
-                    '/style library/entityeditor.css';
+                    '/Style%20Library/entityeditor.css';
                 $('head').append(
                     '<link rel="stylesheet" type="text/css" href="' + css + '">');
                 css = _spPageContextInfo.siteAbsoluteUrl +
-                    "/style library/jquery-ui.css";
+                    "/Style%20Library/jquery-ui.css";
                 $('head').append(
                     '<link rel="stylesheet" type="text/css" href="' + css + '">');
                 $('body').attr('data-entityeditorcssadded', 'true');
@@ -297,8 +297,8 @@
     // register my template overrides
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
         // MDS is enabled
-        var url = _spPageContextInfo.siteServerRelativeUrl +
-            '/style library/entityeditorcsr.js';
+        var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
+            '/Style%20Library/EntityEditorCSR.js';
         // register a callback to register the templates on partial page loads
         RegisterModuleInit(url.toLowerCase(), function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
