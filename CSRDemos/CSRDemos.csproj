@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="AccordionViewCSR.js" />
     <Content Include="CSRConfig.js" />
     <Content Include="entityeditor.css" />
     <Content Include="EntityEditorCSR.js" />
@@ -52,10 +53,10 @@
     <Content Include="SetCSRConfig.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="SetJSLinkOnContentType.aspx">
+    <Content Include="SetJSLinkOnContentType.aspx" />
+    <Content Include="SetJSLinkOnField.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="SetJSLinkOnField.aspx" />
     <Content Include="SetScriptlink.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
