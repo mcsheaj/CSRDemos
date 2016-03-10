@@ -91,7 +91,8 @@
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
         // MDS is enabled
         var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
-            '/Style%20Library/AccordionViewCSR.js';
+            '/_catalogs/masterpage/Display Templates/List Views/AccordionViewCSR.js';
+            //'/Style Library/AccordionViewCSR.js';
         // register a callback to register the templates on partial page loads
         RegisterModuleInit(url, function () {
             $.accordionViewer.registerAccordionViewTemplate();
