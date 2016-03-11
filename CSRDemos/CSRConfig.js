@@ -1,18 +1,18 @@
 ﻿(function ($) {
 
     $.csrConfig = {
-        entityEditorFields: [
-            'EntityEditor',
-            'TagsCovered',
-            'TagsNotCovered',
-            'SingleTag'
-        ],
-
         starRatingFields: [
             'StarRating',
             'Content1',
             'Relevance',
             'Presentation'
+        ],
+
+        entityEditorFields: [
+            'EntityEditor',
+            'TagsCovered',
+            'TagsNotCovered',
+            'SingleTag'
         ],
 
         csrModules: {
