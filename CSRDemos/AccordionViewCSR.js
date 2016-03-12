@@ -36,7 +36,7 @@
                         var result = $("<p/>");
                         var div = $("<div/>", {
                             "class": "accordion",
-                            "style": "width: 600px"
+                            "style": "width: 800px"
                         });
                         div.append($("<h3/>", {
                             "class": "accordion-part",
