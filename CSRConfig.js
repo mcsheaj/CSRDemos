@@ -8,20 +8,7 @@
             ],
 
             entityEditorFields: [
-            ],
-
-            csrModules: {
-                entityEditor: {
-                    name: "entityEditor",
-                    displayName: "Entity Editor",
-                    types: ["Choice"]
-                },
-                starRating: {
-                    name: "starRating",
-                    displayName: "Star Rating",
-                    types: ["Number"]
-                }
-            }
+            ]
         };
 
     })(jQuery);

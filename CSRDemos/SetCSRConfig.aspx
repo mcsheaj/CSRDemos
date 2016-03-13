@@ -103,6 +103,21 @@
                 $.csrConfig = { };
             }
 
+            if (!$.csrConfig.csrModules) {
+                $.csrConfig.csrModules = {
+                    entityEditor: {
+                        name: "entityEditor",
+                        displayName: "Entity Editor",
+                        types: ["Choice"]
+                    },
+                    starRating: {
+                        name: "starRating",
+                        displayName: "Star Rating",
+                        types: ["Number"]
+                    }
+                };
+            }
+
             ////////////////////////////////////////////////////////////////////////////////
             // Code in fron class for the form.
             ////////////////////////////////////////////////////////////////////////////////
