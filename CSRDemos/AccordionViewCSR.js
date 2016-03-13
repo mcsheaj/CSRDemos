@@ -97,12 +97,9 @@
         RegisterModuleInit(url, function () {
             $.accordionViewer.registerAccordionViewTemplate();
         });
-        // also just register for full page loads (F5/refresh)
-        $.accordionViewer.registerAccordionViewTemplate();
-    } else {
-        // if no _spPageContextInfo, then this is a full page load 
-        $.accordionViewer.registerAccordionViewTemplate();
     }
 
+    // also just register for full page loads (F5/refresh)
+    $.accordionViewer.registerAccordionViewTemplate();
 })(jQuery);
 

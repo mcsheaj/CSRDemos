@@ -167,15 +167,12 @@
         var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
             '/Style%20Library/StarRatingsCSR.js';
         // register a callback to register the templates on partial page loads
-        RegisterModuleInit(url, function () {
+        RegisterModuleInit(url.toLowerCase(), function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(starRatingOverrides);
         });
-        // also just register for full page loads (F5/refresh)
-        SPClientTemplates.TemplateManager.RegisterTemplateOverrides(starRatingOverrides);
-    } else {
-        // if no _spPageContextInfo, then this is a full page load regardless of 
-        // MDS being enabled or not, so just register normally
-        SPClientTemplates.TemplateManager.RegisterTemplateOverrides(starRatingOverrides);
     }
+
+    // also just register for full page loads (F5/refresh)
+    SPClientTemplates.TemplateManager.RegisterTemplateOverrides(starRatingOverrides);
 })(jQuery);
 

@@ -303,12 +303,9 @@
         RegisterModuleInit(url.toLowerCase(), function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
         });
-        // also just register for full page loads (F5/refresh)
-        SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
-    } else {
-        // if no _spPageContextInfo, then this is a full page load regardless of 
-        // MDS being enabled or not, so just register normally
-        SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
     }
+
+    // also just register for full page loads (F5/refresh)
+    SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
 })(jQuery);
 
