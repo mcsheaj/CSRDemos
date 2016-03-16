@@ -51,7 +51,7 @@
             }));
             result.append($('<span/>', {
                 'id': current.fieldName + 'Error',
-                'class': 'ms-formvalidation ms-csrformvalidation'
+                'class': 'ms-formvalidation'
             }));
 
             // register a callback to return the current value

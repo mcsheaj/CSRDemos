@@ -226,7 +226,7 @@
             // finally, append a span where we'll output any validation errors
             entityEditor.parent().append($('<span/>', {
                 'id': current.fieldName + 'EntityEditorError',
-                'class': 'ms-formvalidation ms-csrformvalidation'
+                'class': 'ms-formvalidation'
             }));
         }
     };
