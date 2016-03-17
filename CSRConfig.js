@@ -4,10 +4,7 @@
 
         $.csrConfig = {
             starRatingFields: [
-                'Content1'
-            ],
-
-            entityEditorFields: [
+                'ContentQuality'
             ]
         };
 

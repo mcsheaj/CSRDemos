@@ -12,6 +12,12 @@
     if (typeof ($.csrConfig) !== 'object' || typeof ($.csrConfig.entityEditorFields) !== 'object' || !$.csrConfig.entityEditorFields.length)
         return;
 
+    $.inArrayIgnoreCase = function(value, array) {
+        value = value.toLowerCase();
+        array = array.map(function (v) { return v.toLowerCase(); });
+        return $.inArray(value, array);
+    };
+
     /*
      * Implementation class for the overrides.
      */
@@ -69,7 +75,7 @@
         registerValidators: function (current) {
             // create a validator set
             var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
-            fieldValidators.RegisterValidator(new noFillinValidator(current.fieldSchema));
+            fieldValidators.RegisterValidator(noFillinValidator(current.fieldSchema));
 
             // if required, add a required field validator
             if (current.fieldSchema.Required) {
@@ -92,21 +98,33 @@
             var result = [];
 
             var entityEditorDiv = $('#' + fieldName + 'EntityEditor');
+            var entityEditorInput = entityEditorDiv.find(".csrdemos-entityeditorinput");
+
+            if (entityEditorInput.val().length > 0) {
+                var index = $.inArrayIgnoreCase(entityEditorInput.val(), $.entityEditorImpl.source[fieldName]);
+                if (index > -1) {
+                    $.entityEditorImpl.selectEntity(fieldName, $.entityEditorImpl.source[fieldName][index], entityEditorInput);
+                    $('#' + fieldName + 'EntityEditorError').attr('role', '').html("");
+                }
+            }
+
+            if ($.entityEditorImpl.schema[fieldName].FillInChoice === true) {
+                if (entityEditorInput.val().length > 0) {
+                    $.entityEditorImpl.selectEntity(fieldName, entityEditorInput.val(), entityEditorInput);
+                }
+            }
+
             entityEditorDiv.find('.csrdemos-entity').each(function () {
                 result.push($(this).find("a").attr("data-value"));
             });
 
-            if ($.entityEditorImpl.schema[fieldName].FillInChoice === false) {
-                var entityEditorInput = entityEditorDiv.find(".csrdemos-entityeditorinput");
-                if (entityEditorInput.val().length > 0) {
-                    result.push(entityEditorInput.val());
-                }
-            }
-
             if ($.entityEditorImpl.schema[fieldName].FieldType === "MultiChoice") {
+                if (result.length === 0) {
+                    return '';
+                }
                 return ';#' + result.join(';#') + ';#';
             }
-            return result[0];
+            return result.length === 1 ? result[0] : '';
         },
 
         /*
@@ -245,7 +263,7 @@
                 var entityInput = $('#' + this.schema.Name + 'EntityEditor').find("input.csrdemos-entityeditorinput");
                 if (entityInput.val().length > 0) {
                     isError = true;
-                    errorMessage = "'"+value+"' is not resolved; Fill in choices are not support, so all entities must be resolved.";
+                    errorMessage = "'" + entityInput.val() + "' is not resolved; Fill in choices are not support, so all entities must be resolved.";
                 }
             }
 
@@ -275,18 +293,44 @@
     });
 
     /*
-     * Add a post render override event to add the autocomplete functionality
+     * Add a post render override event to add the autocomplete functionality and other
+     * event handlers.
      */
     entityEditorOverrides.OnPostRender = function (ctx) {
         var fieldName = ctx.ListSchema.Field[0].Name;
         if ($.inArray(fieldName, $.csrConfig.entityEditorFields) > -1) {
             var div = $("#" + fieldName + "EntityEditor");
-            div.find("input.csrdemos-entityeditorinput").autocomplete({
+            var input = div.find("input.csrdemos-entityeditorinput");
+
+            input.autocomplete({
                 source: $.entityEditorImpl.source[fieldName].sort(),
                 select: function (e, ui) {
                     return $.entityEditorImpl.selectEntity(fieldName, ui.item.value, this);
                 }
             });
+
+            input.keydown(function (e) {
+                if (e.which === 13) {
+                    var val = input.val();
+                    var index = $.inArrayIgnoreCase(val, $.entityEditorImpl.source[fieldName]);
+                    if (index > -1) {
+                        $.entityEditorImpl.selectEntity(fieldName, $.entityEditorImpl.source[fieldName][index], input);
+                        input.autocomplete("close");
+                    }
+                    else if ($.entityEditorImpl.schema[fieldName].FillInChoice === true) {
+                        $.entityEditorImpl.selectEntity(fieldName, val, input);
+                        input.autocomplete("close");
+                    }
+                    else {
+                        var errorMessage = "'" + val + "' is not resolved; Fill in choices are not support, so all entities must be resolved.";
+                        $('#' + fieldName + 'EntityEditorError').attr('role', 'alert').html(errorMessage);
+                    }
+                }
+                else {
+                    $('#' + fieldName + 'EntityEditorError').attr('role', '').html("");
+                }
+            });
+
             div.click(function (e) {
                 var div = $(e.target);
                 div.find(".csrdemos-entityeditorinput").focus();
