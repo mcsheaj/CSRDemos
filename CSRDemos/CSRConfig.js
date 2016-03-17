@@ -5,7 +5,10 @@
             'StarRating',
             'Content1',
             'Relevance',
-            'Presentation'
+            'Presentation',
+            'ContentQuality',
+            'ContentRelevance',
+            'PresentationSkills'
         ],
 
         entityEditorFields: [
