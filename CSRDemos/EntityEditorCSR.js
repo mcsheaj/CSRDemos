@@ -12,6 +12,7 @@
     if (typeof ($.csrConfig) !== 'object' || typeof ($.csrConfig.entityEditorFields) !== 'object' || !$.csrConfig.entityEditorFields.length)
         return;
 
+    // wish jQuery inArray had an ignore case option ;)
     $.inArrayIgnoreCase = function(value, array) {
         value = value.toLowerCase();
         array = array.map(function (v) { return v.toLowerCase(); });
@@ -75,7 +76,26 @@
         registerValidators: function (current) {
             // create a validator set
             var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
-            fieldValidators.RegisterValidator(noFillinValidator(current.fieldSchema));
+
+            // create a custom validator with an object literal insead of new and a constructor
+            fieldValidators.RegisterValidator({
+                schema: current.fieldSchema,
+
+                Validate: function (value) {
+                    var isError = false;
+                    var errorMessage = '';
+
+                    if (this.schema.FillInChoice === false) {
+                        var entityInput = $('#' + this.schema.Name + 'EntityEditor').find("input.csrdemos-entityeditorinput");
+                        if (entityInput.val().length > 0) {
+                            isError = true;
+                            errorMessage = "'" + entityInput.val() + "' is not resolved; Fill in choices are not support, so all entities must be resolved.";
+                        }
+                    }
+
+                    return new SPClientForms.ClientValidation.ValidationResult(isError, errorMessage);
+                }
+            });
 
             // if required, add a required field validator
             if (current.fieldSchema.Required) {
@@ -100,30 +120,40 @@
             var entityEditorDiv = $('#' + fieldName + 'EntityEditor');
             var entityEditorInput = entityEditorDiv.find(".csrdemos-entityeditorinput");
 
+            // if there is an unresolved value in the input, see if it matches a valid choice (case insensative)
             if (entityEditorInput.val().length > 0) {
                 var index = $.inArrayIgnoreCase(entityEditorInput.val(), $.entityEditorImpl.source[fieldName]);
                 if (index > -1) {
+                    // if we found a valid choice, add it as an entity, clear the input, and clear the validation error if any
                     $.entityEditorImpl.selectEntity(fieldName, $.entityEditorImpl.source[fieldName][index], entityEditorInput);
                     $('#' + fieldName + 'EntityEditorError').attr('role', '').html("");
                 }
             }
 
+            // if there is still an unresolved value in input, and fill in choices are allowed, add whatever
+            // is in input as an entity
             if ($.entityEditorImpl.schema[fieldName].FillInChoice === true) {
                 if (entityEditorInput.val().length > 0) {
                     $.entityEditorImpl.selectEntity(fieldName, entityEditorInput.val(), entityEditorInput);
+                    $('#' + fieldName + 'EntityEditorError').attr('role', '').html("");
                 }
             }
 
+            // now scoop up all of the entities (all the span.csrdemos-entity elements)
             entityEditorDiv.find('.csrdemos-entity').each(function () {
                 result.push($(this).find("a").attr("data-value"));
             });
 
+            // if this is a multi-choice field, join the array and format as a multi-choice value
             if ($.entityEditorImpl.schema[fieldName].FieldType === "MultiChoice") {
                 if (result.length === 0) {
                     return '';
                 }
                 return ';#' + result.join(';#') + ';#';
             }
+
+            // otherwise it's a single choice, we don't have to worry about finding multiple entities because the
+            // input gets hidden for single choice any time we have an entity
             return result.length === 1 ? result[0] : '';
         },
 
@@ -250,29 +280,6 @@
     };
 
     /*
-     * A custom validator is just an object with a Validate method. 
-     */
-    var noFillinValidator = function (schema) {
-        var obj = new Object();
-        obj.schema = schema;
-        obj.Validate = function (value) {
-            var isError = false;
-            var errorMessage = '';
-
-            if (this.schema.FillInChoice === false) {
-                var entityInput = $('#' + this.schema.Name + 'EntityEditor').find("input.csrdemos-entityeditorinput");
-                if (entityInput.val().length > 0) {
-                    isError = true;
-                    errorMessage = "'" + entityInput.val() + "' is not resolved; Fill in choices are not support, so all entities must be resolved.";
-                }
-            }
-
-            return new SPClientForms.ClientValidation.ValidationResult(isError, errorMessage);
-        };
-        return obj;
-    };
-
-    /*
      * Create an empty overrides object.
      */
     var entityEditorOverrides = {
@@ -302,6 +309,7 @@
             var div = $("#" + fieldName + "EntityEditor");
             var input = div.find("input.csrdemos-entityeditorinput");
 
+            // initialize the jquery-ui autocomplete on the input
             input.autocomplete({
                 source: $.entityEditorImpl.source[fieldName].sort(),
                 select: function (e, ui) {
@@ -309,28 +317,39 @@
                 }
             });
 
+            // if the user inputs a return, try to resolve whatever is in the input=
             input.keydown(function (e) {
+                // if the key is return
                 if (e.which === 13) {
                     var val = input.val();
-                    var index = $.inArrayIgnoreCase(val, $.entityEditorImpl.source[fieldName]);
-                    if (index > -1) {
-                        $.entityEditorImpl.selectEntity(fieldName, $.entityEditorImpl.source[fieldName][index], input);
-                        input.autocomplete("close");
-                    }
-                    else if ($.entityEditorImpl.schema[fieldName].FillInChoice === true) {
-                        $.entityEditorImpl.selectEntity(fieldName, val, input);
-                        input.autocomplete("close");
-                    }
-                    else {
-                        var errorMessage = "'" + val + "' is not resolved; Fill in choices are not support, so all entities must be resolved.";
-                        $('#' + fieldName + 'EntityEditorError').attr('role', 'alert').html(errorMessage);
+                    // if there is nothing in the input, do nothing
+                    if (val.length > 0) {
+                        var index = $.inArrayIgnoreCase(val, $.entityEditorImpl.source[fieldName]);
+                        if (index > -1) {
+                            // if the user typed one of the choices (ignoring case), add that choice
+                            $.entityEditorImpl.selectEntity(fieldName, $.entityEditorImpl.source[fieldName][index], input);
+                            input.autocomplete("close");
+                        }
+                        else if ($.entityEditorImpl.schema[fieldName].FillInChoice === true) {
+                            // else if fill in choices are allowed, add whatever they typed
+                            $.entityEditorImpl.selectEntity(fieldName, val, input);
+                            input.autocomplete("close");
+                        }
+                        else {
+                            // else raise a validation error
+                            var errorMessage = "'" + val + "' is not resolved; Fill in choices are not support, so all entities must be resolved.";
+                            $('#' + fieldName + 'EntityEditorError').attr('role', 'alert').html(errorMessage);
+                        }
                     }
                 }
                 else {
+                    // on any other key, just clear the validation error, since we won't know if it's an error until
+                    // they hit return or submit
                     $('#' + fieldName + 'EntityEditorError').attr('role', '').html("");
                 }
             });
 
+            // if the outer div receives a click event, put focus on the input
             div.click(function (e) {
                 var div = $(e.target);
                 div.find(".csrdemos-entityeditorinput").focus();
