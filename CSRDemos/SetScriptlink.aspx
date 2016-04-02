@@ -134,34 +134,36 @@
                 // intentionally.
                 ////////////////////////////////////////////////////////////////////////////////
                 addScriptlinks: function (callback) {
-                    var count = 0;
-                    var suuid = SP.Guid.newGuid();
-                    for (var i = 0; i < scriptlinkSetter.scriptlinks.length; i++) {
-                        var file = scriptlinkSetter.scriptlinks[i];
-                        if ((/\.js$/.test(file) || /\.css$/.test(file)) && (/^~sitecollection/.test(file) || /^~site/.test(file))) {
-                            count++;
-                            var newAction = scriptlinkSetter.userCustomActions.add();
-                            newAction.set_location("ScriptLink");
-                            if (/\.js$/.test(file)) {
-                                newAction.set_scriptSrc(file + "?rev=" + suuid);
+                    scriptlinkSetter.initClientContext(function () {
+                        var count = 0;
+                        var suuid = SP.Guid.newGuid();
+                        for (var i = 0; i < scriptlinkSetter.scriptlinks.length; i++) {
+                            var file = scriptlinkSetter.scriptlinks[i];
+                            if ((/\.js$/.test(file) || /\.css$/.test(file)) && (/^~sitecollection/.test(file) || /^~site/.test(file))) {
+                                count++;
+                                var newAction = scriptlinkSetter.userCustomActions.add();
+                                newAction.set_location("ScriptLink");
+                                if (/\.js$/.test(file)) {
+                                    newAction.set_scriptSrc(file + "?rev=" + suuid);
+                                }
+                                else {
+                                    var css = file.replace(/~sitecollection/g, _spPageContextInfo.siteAbsoluteUrl).replace(/~site/g, _spPageContextInfo.webAbsoluteUrl);
+                                    newAction.set_scriptBlock("document.write(\"<link rel='stylesheet' type='text/css' href='" + css + "'>\");");
+                                }
+                                newAction.set_sequence(59000 + i);
+                                newAction.set_title("Scriptlink Setter File #" + i);
+                                newAction.set_description("Set programmaically by SetScriptlink.aspx.");
+                                newAction.update();
                             }
-                            else {
-                                var css = file.replace(/~sitecollection/g, _spPageContextInfo.siteAbsoluteUrl).replace(/~site/g, _spPageContextInfo.webAbsoluteUrl);
-                                newAction.set_scriptBlock("document.write(\"<link rel='stylesheet' type='text/css' href='" + css + "'>\");");
-                            }
-                            newAction.set_sequence(59000 + i);
-                            newAction.set_title("Scriptlink Setter File #" + i);
-                            newAction.set_description("Set programmaically by SetScriptlink.aspx.");
-                            newAction.update();
                         }
-                    }
 
-                    if (count) {
-                        scriptlinkSetter.clientContext.executeQueryAsync(callback, scriptlinkSetter.error);
-                    }
-                    else {
-                        callback();
-                    }
+                        if (count) {
+                            scriptlinkSetter.clientContext.executeQueryAsync(callback, scriptlinkSetter.error);
+                        }
+                        else {
+                            callback();
+                        }
+                    });
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////
@@ -235,28 +237,31 @@
                 initClientContext: function (success, failure) {
                     if (!scriptlinkSetter.clientContext) {
                         scriptlinkSetter.clientContext = new SP.ClientContext();
-                    }
 
-                    if (!scriptlinkSetter.site) {
-                        scriptlinkSetter.site = scriptlinkSetter.clientContext.get_site();
-                    }
+                        if (!scriptlinkSetter.site) {
+                            scriptlinkSetter.site = scriptlinkSetter.clientContext.get_site();
+                        }
 
-                    if (!scriptlinkSetter.siteUserCustomActions) {
-                        scriptlinkSetter.siteUserCustomActions = scriptlinkSetter.site.get_userCustomActions();
-                        scriptlinkSetter.clientContext.load(scriptlinkSetter.siteUserCustomActions);
-                        scriptlinkSetter.userCustomActions = scriptlinkSetter.siteUserCustomActions;
-                    }
+                        if (!scriptlinkSetter.siteUserCustomActions) {
+                            scriptlinkSetter.siteUserCustomActions = scriptlinkSetter.site.get_userCustomActions();
+                            scriptlinkSetter.clientContext.load(scriptlinkSetter.siteUserCustomActions);
+                            scriptlinkSetter.userCustomActions = scriptlinkSetter.siteUserCustomActions;
+                        }
 
-                    if (!scriptlinkSetter.web) {
-                        scriptlinkSetter.web = scriptlinkSetter.clientContext.get_web();
-                    }
+                        if (!scriptlinkSetter.web) {
+                            scriptlinkSetter.web = scriptlinkSetter.clientContext.get_web();
+                        }
 
-                    if (!scriptlinkSetter.webUserCustomActions) {
-                        scriptlinkSetter.webUserCustomActions = scriptlinkSetter.web.get_userCustomActions();
-                        scriptlinkSetter.clientContext.load(scriptlinkSetter.webUserCustomActions);
-                    }
+                        if (!scriptlinkSetter.webUserCustomActions) {
+                            scriptlinkSetter.webUserCustomActions = scriptlinkSetter.web.get_userCustomActions();
+                            scriptlinkSetter.clientContext.load(scriptlinkSetter.webUserCustomActions);
+                        }
 
-                    scriptlinkSetter.clientContext.executeQueryAsync(success, failure);
+                        scriptlinkSetter.clientContext.executeQueryAsync(success, failure);
+                    }
+                    else {
+                        success();
+                    }
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////
