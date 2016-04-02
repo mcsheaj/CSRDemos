@@ -130,16 +130,16 @@
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // Add a script link for each line on the script link text area. Note: lines
-                // that do not begin with ~sitecollection and end with .js will be skipped
+                // that do not begin with ~sitecollection or ~site and do not end with .js or .css will be skipped
                 // intentionally.
                 ////////////////////////////////////////////////////////////////////////////////
                 addScriptlinks: function (callback) {
-                    var found = false;
+                    var count = 0;
                     var suuid = SP.Guid.newGuid();
                     for (var i = 0; i < scriptlinkSetter.scriptlinks.length; i++) {
                         var file = scriptlinkSetter.scriptlinks[i];
                         if ((/\.js$/.test(file) || /\.css$/.test(file)) && (/^~sitecollection/.test(file) || /^~site/.test(file))) {
-                            found = true;
+                            count++;
                             var newAction = scriptlinkSetter.userCustomActions.add();
                             newAction.set_location("ScriptLink");
                             if (/\.js$/.test(file)) {
@@ -156,7 +156,7 @@
                         }
                     }
 
-                    if (found) {
+                    if (count) {
                         scriptlinkSetter.clientContext.executeQueryAsync(callback, scriptlinkSetter.error);
                     }
                     else {
