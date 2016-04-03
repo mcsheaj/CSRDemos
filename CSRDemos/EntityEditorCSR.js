@@ -49,7 +49,7 @@
 
             // register a callback to return the current value
             current.registerGetValueCallback(current.fieldName, function () {
-                $.entityEditorImpl.getFieldValue(current);
+                return $.entityEditorImpl.getFieldValue(current);
             });
 
             // register validators for this control
@@ -145,14 +145,19 @@
             // if this is a multi-choice field, join the array and format as a multi-choice value
             if ($.entityEditorImpl.schema[current.fieldName].FieldType === "MultiChoice") {
                 if (result.length === 0) {
-                    return '';
+                    result = '';
                 }
-                return ';#' + result.join(';#') + ';#';
+                else {
+                    result = ';#' + result.join(';#') + ';#';
+                }
             }
-
             // otherwise it's a single choice, we don't have to worry about finding multiple entities because the
             // input gets hidden for single choice any time we have an entity
-            return result.length === 1 ? result[0] : '';
+            else {
+                result = result.length === 1 ? result[0] : '';
+            }
+
+            return result;
         },
 
         /*
