@@ -55,9 +55,9 @@
             }));
 
             // register a callback to return the current value
-            current.registerGetValueCallback(
-                current.fieldName,
-                $.starRatingImpl.getFieldValue.bind(null, current.fieldName));
+            current.registerGetValueCallback(current.fieldName, function () {
+                return $.starRatingImpl.getFieldValue(current);
+            });
 
             return result.html();
         },
@@ -65,8 +65,8 @@
         /*
          * Return the current value from the data-value attribute of my div.
          */
-        getFieldValue: function (fieldName) {
-            return $.starRatingImpl.normalizeValue($('#' + fieldName).attr('data-value'));
+        getFieldValue: function (current) {
+            return $.starRatingImpl.normalizeValue($('#' + current.fieldName).attr('data-value'));
         },
 
         /*
