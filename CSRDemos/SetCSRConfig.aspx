@@ -418,7 +418,7 @@
                                     newAction.set_scriptBlock("document.write(\"<link rel='stylesheet' type='text/css' href='" + css + "'>\");");
                                 }
                                 newAction.set_sequence(59000 + i);
-                                newAction.set_title("CSR Config Setter File #" + i);
+                                newAction.set_title("Scriptlink Setter File #" + i);
                                 newAction.set_description("Set programmaically by SetScriptlink.aspx.");
                                 newAction.update();
                             }
@@ -442,7 +442,7 @@
                         var toDelete = [];
                         while (enumerator.moveNext()) {
                             var action = enumerator.get_current();
-                            if (/^CSR Config Setter File #/.test(action.get_title())) {
+                            if (/^Scriptlink Setter File #/.test(action.get_title())) {
                                 toDelete.push(action);
                             }
                         }
