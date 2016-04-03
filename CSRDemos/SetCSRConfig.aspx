@@ -108,12 +108,27 @@
                     entityEditor: {
                         name: "entityEditor",
                         displayName: "Entity Editor",
-                        types: ["Choice"]
+                        types: ["Choice"],
+                        jsLink: [
+                            "~sitecollection/Style Library/CSRConfig.js",
+                            "~sitecollection/Style Library/EntityEditorCSR.js"
+                        ],
+                        scriptLinks: [
+                            "~sitecollection/Style Library/jquery.js",
+                            "~sitecollection/Style Library/jquery-ui.js"
+                        ]
                     },
                     starRating: {
                         name: "starRating",
                         displayName: "Star Rating",
-                        types: ["Number"]
+                        types: ["Number"],
+                        jsLink: [
+                            "~sitecollection/Style Library/CSRConfig.js",
+                            "~sitecollection/Style Library/StarRatingsCSR.js"
+                        ],
+                        scriptLinks: [
+                            "~sitecollection/Style Library/jquery.js"
+                        ]
                     }
                 };
             }
@@ -122,52 +137,52 @@
             // Code in fron class for the form.
             ////////////////////////////////////////////////////////////////////////////////
             var csrConfigSetter = {
+                toDelete: [],
+
                 ////////////////////////////////////////////////////////////////////////////////
                 // Main entry point, needs to be called after SharePoint context is prepared.
                 ////////////////////////////////////////////////////////////////////////////////
                 init: function () {
-                    // get the context
-                    csrConfigSetter.ctx = new SP.ClientContext.get_current();
-                    csrConfigSetter.web = csrConfigSetter.ctx.get_web();
+                    csrConfigSetter.initClientContext(function () {
+                        // load the site columns
+                        csrConfigSetter.fields = csrConfigSetter.web.get_availableFields();
+                        csrConfigSetter.clientContext.load(csrConfigSetter.fields);
 
-                    // load the site columns
-                    csrConfigSetter.fields = csrConfigSetter.web.get_availableFields();
-                    csrConfigSetter.ctx.load(csrConfigSetter.fields);
+                        // exec the query async
+                        csrConfigSetter.clientContext.executeQueryAsync(
+                            function () {
+                                // on success enumerate the fields and initialize the form controls
+                                csrConfigSetter.enumerateFields();
 
-                    // exec the query async
-                    csrConfigSetter.ctx.executeQueryAsync(
-                        function () {
-                            // on success enumerate the fields and initialize the form controls
-                            csrConfigSetter.enumerateFields();
+                                // for each module, add an option to the csrType select, and display the current configuration
+                                $.each(Object.keys($.csrConfig.csrModules), function (i, k) {
+                                    var csrModule = $.csrConfig.csrModules[k];
+                                    $("#csrType").append($("<option/>", { "value": csrModule.name }).text(csrModule.displayName));
+                                    csrConfigSetter.drawCSRTable(csrModule);
+                                });
 
-                            // for each module, add an option to the csrType select, and display the current configuration
-                            $.each(Object.keys($.csrConfig.csrModules), function (i, k) {
-                                var csrModule = $.csrConfig.csrModules[k];
-                                $("#csrType").append($("<option/>", { "value": csrModule.name }).text(csrModule.displayName));
-                                csrConfigSetter.drawCSRTable(csrModule);
-                            });
+                                // when the csr type select changes, change the select of available fields for that the new type
+                                csrConfigSetter.wireCsrTypeSelect();
 
-                            // when the csr type select changes, change the select of available fields for that the new type
-                            csrConfigSetter.wireCsrTypeSelect();
+                                // when the field select changes, enable/disable the add button
+                                csrConfigSetter.wireFieldSelect();
 
-                            // when the field select changes, enable/disable the add button
-                            csrConfigSetter.wireFieldSelect();
+                                // when clicked, add a row to the appropriate table and clear selects 
+                                csrConfigSetter.wireAddCsrButton();
 
-                            // when clicked, add a row to the appropriate table and clear selects 
-                            csrConfigSetter.wireAddCsrButton();
+                                // when clicked, post the CSRConfig.js file and clear selects
+                                csrConfigSetter.wireSaveButton();
 
-                            // when clicked, post the CSRConfig.js file and clear selects
-                            csrConfigSetter.wireSaveButton();
+                                // when click, remove the table row
+                                csrConfigSetter.wireDeleteButtons();
 
-                            // when click, remove the table row
-                            csrConfigSetter.wireDeleteButtons();
-
-                            $("#content").show();
-                        },
-                        function () {
-                            alert("Could not load site columns.")
-                        }
-                    );
+                                $("#content").show();
+                            },
+                            function () {
+                                alert("Could not load site columns.")
+                            }
+                        );
+                    });
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////
@@ -216,6 +231,9 @@
                     }).click(function () {
                         var csrModule = $.csrConfig.csrModules[$("#csrType").val()];
                         var v = csrConfigSetter[csrModule.name][$("#field").val()];
+                        if ($.inArray(v.name, csrConfigSetter.toDelete) > -1) {
+                            csrConfigSetter.toDelete.splice($.inArray(v.name, csrConfigSetter.toDelete), 1);
+                        }
                         var table = $("#" + csrModule.name + "Table");
                         var row = $("<tr/>", { "class": "config" });
                         row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.name)));
@@ -224,13 +242,36 @@
                         row.append(($("<td/>").html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>")))
                         table.append(row);
                         table.find("tr.empty").remove();
-                        $("#csrType").val("");
-                        $("#field").html("<option></option>");
+                        $("#field").find("option").first().attr("selected", "selected");
+                        $("#field").find("option[value='" + v.name + "']").remove();
                         $("#addCsr").button("option", "disabled", true);
                         $("#save").button("option", "disabled", false);
                     });
                     $("#addCsr").button("option", "disabled", true);
 
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Delete a row from one of the configuration tables.
+                ////////////////////////////////////////////////////////////////////////////////
+                wireDeleteButtons: function () {
+                    $(".csr-fields").on("click", ".ui-icon-closethick", function (e) {
+                        var span = $(e.target);
+                        var table = span.closest("table");
+                        var tr = span.closest("tr");
+                        var name = $(tr.children()[0]).text();
+                        if ($.inArray(name, csrConfigSetter.toDelete) < 0) {
+                            csrConfigSetter.toDelete.push(name);
+                        }
+                        tr.remove();
+                        $("#csrType").val("");
+                        if (table.find("td").length === 0) {
+                            table.append((
+                                $("<tr/>", { "class": "empty" }).html("<td class='ui-widget-content ui-corner-all nobr' colspan='3'>There currently are no fields configured to use this CSR.</td>")
+                            ));
+                        }
+                        $("#save").button("option", "disabled", false);
+                    });
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////
@@ -244,11 +285,15 @@
                         },
                         text: true
                     }).click(function () {
-                        $.csrConfig.entityEditorFields = csrConfigSetter.getConfig("entityEditorTable");
-                        $.csrConfig.starRatingFields = csrConfigSetter.getConfig("starRatingTable");
+                        $.each(Object.keys($.csrConfig.csrModules), function (i, k) {
+                            var m = $.csrConfig.csrModules[k];
+                            $.csrConfig[m.name + "Fields"] = csrConfigSetter.getConfig(m.name + "Table");
+                        });
+
                         var contents = "(function ($) {\n\n";
                         contents += "$.csrConfig = " + JSON.stringify($.csrConfig, null, 4);
                         contents += "\n\n\n})(jQuery);\n";
+                        contents = contents.replace(/\r?\n/g, "\r\n");
 
                         $.ajax({
                             url: csrConfigSetter.siteRelativePathAsAbsolutePath("/Style Library/CSRConfig.js"),
@@ -260,6 +305,7 @@
                             data: contents,
                             success: function () {
                                 $("#save").button("option", "disabled", true);
+                                csrConfigSetter.injectScripts();
                                 alert("Successfully saved the configuration.");
                             },
                             error: function (xhr, ajaxOptions, thrownError) {
@@ -271,22 +317,189 @@
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////
-                // Delete a row from one of the configuration tables.
+                // Setup and ScriptLinks and/or JSLink required for the currently configured
+                // fields.
                 ////////////////////////////////////////////////////////////////////////////////
-                wireDeleteButtons: function () {
-                    $(".csr-fields").on("click", ".ui-icon-closethick", function (e) {
-                        var span = $(e.target);
-                        var table = span.closest("table");
-                        var tr = span.closest("tr");
-                        tr.remove();
-                        $("#csrType").val("");
-                        if (table.find("td").length === 0) {
-                            table.append((
-                                $("<tr/>", { "class": "empty" }).html("<td class='ui-widget-content ui-corner-all nobr' colspan='3'>There currently are no fields configured to use this CSR.</td>")
-                            ));
-                        }
-                        $("#save").button("option", "disabled", false);
+                injectScripts: function () {
+                    var scripts = csrConfigSetter.getScripts();
+                    csrConfigSetter.injectScriptLinks(scripts.scriptLinks);
+                    csrConfigSetter.injectJSLink(scripts.jsLink);
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Return a structure of all ScriptLinks and JSLink currently configure (and de-duped).
+                ////////////////////////////////////////////////////////////////////////////////
+                getScripts: function () {
+                        var result = {};
+                        result.jsLink = {};
+                        result.scriptLinks = [];
+                        $.each(Object.keys($.csrConfig.csrModules), function (i, k) {
+                            var fields = $.csrConfig[k + "Fields"];
+                            var module = $.csrConfig.csrModules[k];
+                            if (fields.length > 0) {
+                                $.each($(fields), function (j, f) {
+                                    result.jsLink[f] = result.jsLink[f] ? merge(result.jsLink[f], module.jsLink) : module.jsLink;
+                                });
+
+                                result.scriptLinks = csrConfigSetter.merge(result.scriptLinks, module.scriptLinks);
+                            }
+                        });
+                        return result;
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Setup and ScriptLinks required for the currently configured
+                // fields.
+                ////////////////////////////////////////////////////////////////////////////////
+                injectScriptLinks: function (scriptLinks) {
+                    csrConfigSetter.deleteScriptlinks(function () {
+                        csrConfigSetter.addScriptlinks(scriptLinks, function () {
+                            // quiet on success, alert on error
+                        });
                     });
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Setup and JSLink required for the currently configured
+                // fields.
+                ////////////////////////////////////////////////////////////////////////////////
+                injectJSLink: function (jsLink) {
+                    csrConfigSetter.initClientContext(function () {
+                        var fields = {};
+                        $.each(Object.keys(jsLink), function (i, key) {
+                            fields[key] = csrConfigSetter.web.get_availableFields().getByInternalNameOrTitle(key);
+                            csrConfigSetter.clientContext.load(fields[key]);
+                        });
+
+                        $.each(csrConfigSetter.toDelete, function (i, name) {
+                            fields[name] = csrConfigSetter.web.get_availableFields().getByInternalNameOrTitle(name);
+                            csrConfigSetter.clientContext.load(fields[name]);
+                        });
+
+                        csrConfigSetter.clientContext.executeQueryAsync(function () {
+                            $.each(Object.keys(jsLink), function (i, key) {
+                                var scripts = jsLink[key].join("|");
+                                fields[key].set_jsLink(scripts);
+                                fields[key].updateAndPushChanges(true);
+                            });
+
+                            $.each(csrConfigSetter.toDelete, function (i, name) {
+                                fields[name].set_jsLink("");
+                                fields[name].updateAndPushChanges(true);
+                            });
+
+                            csrConfigSetter.clientContext.executeQueryAsync(function () {
+                                // silent on success, alert on error
+                            }, csrConfigSetter.error);
+                        }, csrConfigSetter.error);
+                    });
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Add a script link for item in the scriptLinks array. Note: lines
+                // that do not begin with ~sitecollection or ~site and do not end with .js or .css will be skipped
+                // intentionally.
+                ////////////////////////////////////////////////////////////////////////////////
+                addScriptlinks: function (scriptLinks, callback) {
+                    csrConfigSetter.initClientContext(function () {
+                        var count = 0;
+                        var suuid = SP.Guid.newGuid();
+                        for (var i = 0; i < scriptLinks.length; i++) {
+                            var file = scriptLinks[i];
+                            if ((/\.js$/.test(file) || /\.css$/.test(file)) && (/^~sitecollection/.test(file) || /^~site/.test(file))) {
+                                count++;
+                                var newAction = csrConfigSetter.userCustomActions.add();
+                                newAction.set_location("ScriptLink");
+                                if (/\.js$/.test(file)) {
+                                    newAction.set_scriptSrc(file + "?rev=" + suuid);
+                                }
+                                else {
+                                    var css = file.replace(/~sitecollection/g, _spPageContextInfo.siteAbsoluteUrl).replace(/~site/g, _spPageContextInfo.webAbsoluteUrl);
+                                    newAction.set_scriptBlock("document.write(\"<link rel='stylesheet' type='text/css' href='" + css + "'>\");");
+                                }
+                                newAction.set_sequence(59000 + i);
+                                newAction.set_title("CSR Config Setter File #" + i);
+                                newAction.set_description("Set programmaically by SetScriptlink.aspx.");
+                                newAction.update();
+                            }
+                        }
+
+                        if (count) {
+                            csrConfigSetter.clientContext.executeQueryAsync(callback, csrConfigSetter.error);
+                        }
+                        else {
+                            callback();
+                        }
+                    });
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Delete script links who's titles look like they were set by me.
+                ////////////////////////////////////////////////////////////////////////////////
+                deleteScriptlinks: function (callback) {
+                    csrConfigSetter.initClientContext(function () {
+                        var enumerator = csrConfigSetter.userCustomActions.getEnumerator();
+                        var toDelete = [];
+                        while (enumerator.moveNext()) {
+                            var action = enumerator.get_current();
+                            if (/^CSR Config Setter File #/.test(action.get_title())) {
+                                toDelete.push(action);
+                            }
+                        }
+
+                        if (toDelete.length > 0) {
+                            for (var i = 0; i < toDelete.length; i++) {
+                                toDelete[i].deleteObject();
+                            }
+
+                            csrConfigSetter.clientContext.executeQueryAsync(callback, csrConfigSetter.error);
+                        }
+                        else {
+                            callback();
+                        }
+                    }, csrConfigSetter.error);
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Initialize the sharepoint object model, including site, web, and userCustomActions.
+                ////////////////////////////////////////////////////////////////////////////////
+                initClientContext: function (success, failure) {
+                    if (!csrConfigSetter.clientContext) {
+                        csrConfigSetter.clientContext = new SP.ClientContext();
+
+                        if (!csrConfigSetter.site) {
+                            csrConfigSetter.site = csrConfigSetter.clientContext.get_site();
+                        }
+
+                        if (!csrConfigSetter.userCustomActions) {
+                            csrConfigSetter.userCustomActions = csrConfigSetter.site.get_userCustomActions();
+                            csrConfigSetter.clientContext.load(csrConfigSetter.userCustomActions);
+                        }
+
+                        if (!csrConfigSetter.web) {
+                            csrConfigSetter.web = csrConfigSetter.clientContext.get_web();
+                        }
+
+                        csrConfigSetter.clientContext.executeQueryAsync(success, failure);
+                    }
+                    else {
+                        success();
+                    }
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Failure callback for all async calls.
+                ////////////////////////////////////////////////////////////////////////////////
+                error: function () {
+                    alert("Oops, something bad happened...");
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Merge two arrays removing duplicates.
+                ////////////////////////////////////////////////////////////////////////////////
+                merge: function (a, b) {
+                    var c = $.merge(a, b);
+                    return $.map(c, function (v, i) { return c.indexOf(v) === i ? v : undefined; });
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////

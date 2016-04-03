@@ -25,8 +25,8 @@
             var result = $('<p />');
             result.append($('<div/>', {
                 'id': ctx.CurrentFieldSchema.Name,
-                //'class': 'csrdemos-stars csrdemos-' + ctx.CurrentFieldValue + 'stars',
-                'class': 'csrdemos-stars csrdemos-' + ctx.CurrentItem[ctx.CurrentFieldSchema.Name] + 'stars',
+                //'class': 'csrdemos-stars csrdemos-' + $.starRatingImpl.normalizeValue(ctx.CurrentFieldValue) + 'stars',
+                'class': 'csrdemos-stars csrdemos-' + $.starRatingImpl.normalizeValue(ctx.CurrentItem[ctx.CurrentFieldSchema.Name]) + 'stars',
                 'data-value': ctx.CurrentItem[ctx.CurrentFieldSchema.Name]
             }));
 
@@ -45,7 +45,7 @@
             var result = $('<p />');
             result.append($('<div/>', {
                 'id': current.fieldName,
-                'class': 'csrdemos-stars csrdemos-' + ctx.CurrentFieldValue + 'stars',
+                'class': 'csrdemos-stars csrdemos-' + $.starRatingImpl.normalizeValue(ctx.CurrentFieldValue) + 'stars',
                 'data-value': ctx.CurrentFieldValue,
                 'onclick': '$.starRatingImpl.handleClickOnStarRating(event)'
             }));
@@ -59,39 +59,28 @@
                 current.fieldName,
                 $.starRatingImpl.getFieldValue.bind(null, current.fieldName));
 
-            // register validators
-            $.starRatingImpl.registerValidators(current);
-
             return result.html();
-        },
-
-        /*
-         * Setup validation handlers on the new and edit forms.
-         */
-        registerValidators: function (current) {
-            // create a validator set
-            var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();
-            fieldValidators.RegisterValidator(new starRatingsFieldValidator());
-
-            // if required, add a required field validator
-            if (current.fieldSchema.Required) {
-                fieldValidators.RegisterValidator(new SPClientForms.ClientValidation.RequiredValidator());
-            }
-
-            // register a callback method for the validators
-            current.registerValidationErrorCallback(current.fieldName, function (error) {
-                $('#' + current.fieldName + 'Error').attr('role', 'alert').html(error.errorMessage);
-            });
-
-            // register the validators
-            current.registerClientValidator(current.fieldName, fieldValidators);
         },
 
         /*
          * Return the current value from the data-value attribute of my div.
          */
         getFieldValue: function (fieldName) {
-            return $('#' + fieldName).attr('data-value');
+            return $.starRatingImpl.normalizeValue($('#' + fieldName).attr('data-value'));
+        },
+
+        /*
+         * Reduce value to 0 to 5.
+         */
+        normalizeValue: function (value) {
+            var result = parseInt(value);
+            if (result > 5) {
+                result = 5;
+            }
+            else if (result < 0) {
+                result = 0;
+            }
+            return result.toString();
         },
 
         /*
@@ -119,25 +108,6 @@
             div.addClass('csrdemos-' + stars + 'stars');
             div.attr('data-value', stars);
         }
-    };
-
-    /*
-     * A custom validator is just an object with a Validate method. It takes in the
-     * value and returns an error based on whatever criteria it chooses; in this case
-     * berating people for a wishy-washy answer (i.e. 3).
-     */
-    var starRatingsFieldValidator = function () {
-        starRatingsFieldValidator.prototype.Validate = function (value) {
-            var isError = false;
-            var errorMessage = '';
-
-            if (value == '3') {
-                isError = true;
-                errorMessage = 'Don\'t be mealy-mouthed, take a stand!';
-            }
-
-            return new SPClientForms.ClientValidation.ValidationResult(isError, errorMessage);
-        };
     };
 
     /*

@@ -8,7 +8,7 @@
         Min="0"
         Max="5"
         Required="FALSE"
-        JSLink="~sitecollection/style library/jquery.js|~sitecollection/style library/csrsandbox/starratingscsr.js"
+        JSLink="~sitecollection/style library/jquery.js|~sitecollection/style library/csrconfig.js|~sitecollection/style library/starratingscsr.js"
         Group="CSR Demos" />
     <Field
         ID="{2973eb77-a3cd-45a8-9109-10f10dee7f8f}"
@@ -16,7 +16,7 @@
         DisplayName='Entity Editor'
         Type='MultiChoice'
         FillInChoice='TRUE'
-        JSLink="~sitecollection/style library/jquery.js|~sitecollection/style library/csrsandbox/jquery-ui.js|~sitecollection/style library/csrsandbox/entityeditorcsr.js"
+        JSLink="~sitecollection/style library/jquery.js|~sitecollection/style library/jquery-ui.js|~sitecollection/style library/csrconfig.js|~sitecollection/style library/entityeditorcsr.js"
         Group="CSR Demos" >
         <Default></Default>
         <CHOICES>

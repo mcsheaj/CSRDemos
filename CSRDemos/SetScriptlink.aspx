@@ -114,7 +114,7 @@
                                     var file = files[i];
                                     if (file.trim().length > 0) {
                                         file = file.trim();
-                                        if (/\.js$/.test(file)) {
+                                        if (/\.js$/.test(file) || /\.css$/.test(file)) {
                                             scriptlinkSetter.scriptlinks.push(file);
                                         }
                                     }
@@ -130,32 +130,40 @@
 
                 ////////////////////////////////////////////////////////////////////////////////
                 // Add a script link for each line on the script link text area. Note: lines
-                // that do not begin with ~sitecollection and end with .js will be skipped
+                // that do not begin with ~sitecollection or ~site and do not end with .js or .css will be skipped
                 // intentionally.
                 ////////////////////////////////////////////////////////////////////////////////
                 addScriptlinks: function (callback) {
-                    var found = false;
-                    var suuid = SP.Guid.newGuid();
-                    for (var i = 0; i < scriptlinkSetter.scriptlinks.length; i++) {
-                        var file = scriptlinkSetter.scriptlinks[i];
-                        if (/\.js$/.test(file) && /^~sitecollection/.test(file)) {
-                            found = true;
-                            var newAction = scriptlinkSetter.userCustomActions.add();
-                            newAction.set_location("ScriptLink");
-                            newAction.set_scriptSrc(file + "?rev=" + suuid);
-                            newAction.set_sequence(59000 + i);
-                            newAction.set_title("Scriptlink Setter File #" + i);
-                            newAction.set_description("Set programmaically by SetScriptlink.aspx.");
-                            newAction.update();
+                    scriptlinkSetter.initClientContext(function () {
+                        var count = 0;
+                        var suuid = SP.Guid.newGuid();
+                        for (var i = 0; i < scriptlinkSetter.scriptlinks.length; i++) {
+                            var file = scriptlinkSetter.scriptlinks[i];
+                            if ((/\.js$/.test(file) || /\.css$/.test(file)) && (/^~sitecollection/.test(file) || /^~site/.test(file))) {
+                                count++;
+                                var newAction = scriptlinkSetter.userCustomActions.add();
+                                newAction.set_location("ScriptLink");
+                                if (/\.js$/.test(file)) {
+                                    newAction.set_scriptSrc(file + "?rev=" + suuid);
+                                }
+                                else {
+                                    var css = file.replace(/~sitecollection/g, _spPageContextInfo.siteAbsoluteUrl).replace(/~site/g, _spPageContextInfo.webAbsoluteUrl);
+                                    newAction.set_scriptBlock("document.write(\"<link rel='stylesheet' type='text/css' href='" + css + "'>\");");
+                                }
+                                newAction.set_sequence(59000 + i);
+                                newAction.set_title("Scriptlink Setter File #" + i);
+                                newAction.set_description("Set programmaically by SetScriptlink.aspx.");
+                                newAction.update();
+                            }
                         }
-                    }
 
-                    if (found) {
-                        scriptlinkSetter.clientContext.executeQueryAsync(callback, scriptlinkSetter.error);
-                    }
-                    else {
-                        callback();
-                    }
+                        if (count) {
+                            scriptlinkSetter.clientContext.executeQueryAsync(callback, scriptlinkSetter.error);
+                        }
+                        else {
+                            callback();
+                        }
+                    });
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////
@@ -196,9 +204,23 @@
                             var action = enumerator.get_current();
                             if (/^Scriptlink Setter File #/.test(action.get_title())) {
                                 var path = action.get_scriptSrc();
-                                if (path.indexOf("?") > 0)
-                                    path = path.substr(0, path.indexOf("?"));
-                                tmp.push({ p: path, s: action.get_sequence() });
+                                if (path) {
+                                    if (path.indexOf("?") > 0)
+                                        path = path.substr(0, path.indexOf("?"));
+                                    tmp.push({ p: path, s: action.get_sequence() });
+                                }
+                                else {
+                                    var scriptBlock = action.get_scriptBlock();
+                                    var regexp = new RegExp("href=\'([^\']*)\'", "i");
+                                    var matches = scriptBlock.match(regexp);
+                                    if(matches && matches.length >= 2) {
+                                        path = matches[1];
+                                        var sitecollectionregexp = new RegExp(_spPageContextInfo.siteAbsoluteUrl, "g");
+                                        var siteregexp = new RegExp(_spPageContextInfo.webAbsoluteUrl, "g");
+                                        path = path.replace(sitecollectionregexp, "~sitecollection").replace(siteregexp, "~site");
+                                        tmp.push({ p: path, s: action.get_sequence() });
+                                    }
+                                }
                             }
                         }
                         tmp = tmp.sort(function (a, b) { if (a.s < b.s) return -1; if (a.s > b.s) return 1; return 0 });
@@ -215,28 +237,31 @@
                 initClientContext: function (success, failure) {
                     if (!scriptlinkSetter.clientContext) {
                         scriptlinkSetter.clientContext = new SP.ClientContext();
-                    }
 
-                    if (!scriptlinkSetter.site) {
-                        scriptlinkSetter.site = scriptlinkSetter.clientContext.get_site();
-                    }
+                        if (!scriptlinkSetter.site) {
+                            scriptlinkSetter.site = scriptlinkSetter.clientContext.get_site();
+                        }
 
-                    if (!scriptlinkSetter.siteUserCustomActions) {
-                        scriptlinkSetter.siteUserCustomActions = scriptlinkSetter.site.get_userCustomActions();
-                        scriptlinkSetter.clientContext.load(scriptlinkSetter.siteUserCustomActions);
-                        scriptlinkSetter.userCustomActions = scriptlinkSetter.siteUserCustomActions;
-                    }
+                        if (!scriptlinkSetter.siteUserCustomActions) {
+                            scriptlinkSetter.siteUserCustomActions = scriptlinkSetter.site.get_userCustomActions();
+                            scriptlinkSetter.clientContext.load(scriptlinkSetter.siteUserCustomActions);
+                            scriptlinkSetter.userCustomActions = scriptlinkSetter.siteUserCustomActions;
+                        }
 
-                    if (!scriptlinkSetter.web) {
-                        scriptlinkSetter.web = scriptlinkSetter.clientContext.get_web();
-                    }
+                        if (!scriptlinkSetter.web) {
+                            scriptlinkSetter.web = scriptlinkSetter.clientContext.get_web();
+                        }
 
-                    if (!scriptlinkSetter.webUserCustomActions) {
-                        scriptlinkSetter.webUserCustomActions = scriptlinkSetter.web.get_userCustomActions();
-                        scriptlinkSetter.clientContext.load(scriptlinkSetter.webUserCustomActions);
-                    }
+                        if (!scriptlinkSetter.webUserCustomActions) {
+                            scriptlinkSetter.webUserCustomActions = scriptlinkSetter.web.get_userCustomActions();
+                            scriptlinkSetter.clientContext.load(scriptlinkSetter.webUserCustomActions);
+                        }
 
-                    scriptlinkSetter.clientContext.executeQueryAsync(success, failure);
+                        scriptlinkSetter.clientContext.executeQueryAsync(success, failure);
+                    }
+                    else {
+                        success();
+                    }
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////
