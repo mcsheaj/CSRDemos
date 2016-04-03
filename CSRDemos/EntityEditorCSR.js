@@ -79,14 +79,12 @@
 
             // create a custom validator with an object literal insead of new and a constructor
             fieldValidators.RegisterValidator({
-                schema: current.fieldSchema,
-
                 Validate: function (value) {
                     var isError = false;
                     var errorMessage = '';
 
-                    if (this.schema.FillInChoice === false) {
-                        var entityInput = $('#' + this.schema.Name + 'EntityEditor').find("input.csrdemos-entityeditorinput");
+                    if (current.fieldSchema.FillInChoice === false) {
+                        var entityInput = $('#' + current.fieldSchema.Name + 'EntityEditor').find("input.csrdemos-entityeditorinput");
                         if (entityInput.val().length > 0) {
                             isError = true;
                             errorMessage = "'" + entityInput.val() + "' is not resolved; Fill in choices are not support, so all entities must be resolved.";
@@ -180,7 +178,7 @@
         selectEntity: function (fieldName, value, entityEditorInput) {
             var span = $("<span>", {
                 "class": "csrdemos-entity",
-                "title": "Remove Entity",
+                "title": value,
                 "data-fieldname": fieldName
             }).text(value);
             $("<a>", {
