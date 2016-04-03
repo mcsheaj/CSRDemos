@@ -48,9 +48,9 @@
             $.entityEditorImpl.constructInput(ctx, current, entityEditor);
 
             // register a callback to return the current value
-            current.registerGetValueCallback(
-                current.fieldName,
-                $.entityEditorImpl.getFieldValue.bind($.entityEditorImpl, current.fieldName));
+            current.registerGetValueCallback(current.fieldName, function () {
+                $.entityEditorImpl.getFieldValue(current);
+            });
 
             // register validators for this control
             $.entityEditorImpl.registerValidators(current);
@@ -112,28 +112,28 @@
         /*
          * Return the current value from the data-value attribute of my div.
          */
-        getFieldValue: function (fieldName) {
+        getFieldValue: function (current) {
             var result = [];
 
-            var entityEditorDiv = $('#' + fieldName + 'EntityEditor');
+            var entityEditorDiv = $('#' + current.fieldName + 'EntityEditor');
             var entityEditorInput = entityEditorDiv.find(".csrdemos-entityeditorinput");
 
             // if there is an unresolved value in the input, see if it matches a valid choice (case insensative)
             if (entityEditorInput.val().length > 0) {
-                var index = $.inArrayIgnoreCase(entityEditorInput.val(), $.entityEditorImpl.source[fieldName]);
+                var index = $.inArrayIgnoreCase(entityEditorInput.val(), $.entityEditorImpl.source[current.fieldName]);
                 if (index > -1) {
                     // if we found a valid choice, add it as an entity, clear the input, and clear the validation error if any
-                    $.entityEditorImpl.selectEntity(fieldName, $.entityEditorImpl.source[fieldName][index], entityEditorInput);
-                    $('#' + fieldName + 'EntityEditorError').attr('role', '').html("");
+                    $.entityEditorImpl.selectEntity(current.fieldName, $.entityEditorImpl.source[current.fieldName][index], entityEditorInput);
+                    $('#' + current.fieldName + 'EntityEditorError').attr('role', '').html("");
                 }
             }
 
             // if there is still an unresolved value in input, and fill in choices are allowed, add whatever
             // is in input as an entity
-            if ($.entityEditorImpl.schema[fieldName].FillInChoice === true) {
+            if ($.entityEditorImpl.schema[current.fieldName].FillInChoice === true) {
                 if (entityEditorInput.val().length > 0) {
-                    $.entityEditorImpl.selectEntity(fieldName, entityEditorInput.val(), entityEditorInput);
-                    $('#' + fieldName + 'EntityEditorError').attr('role', '').html("");
+                    $.entityEditorImpl.selectEntity(current.fieldName, entityEditorInput.val(), entityEditorInput);
+                    $('#' + current.fieldName + 'EntityEditorError').attr('role', '').html("");
                 }
             }
 
@@ -143,7 +143,7 @@
             });
 
             // if this is a multi-choice field, join the array and format as a multi-choice value
-            if ($.entityEditorImpl.schema[fieldName].FieldType === "MultiChoice") {
+            if ($.entityEditorImpl.schema[current.fieldName].FieldType === "MultiChoice") {
                 if (result.length === 0) {
                     return '';
                 }
