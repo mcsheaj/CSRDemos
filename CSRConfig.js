@@ -5,7 +5,10 @@
         $.csrConfig = {
             starRatingFields: [
                 'ContentQuality'
-            ]
+            ],
+            entityEditorFields: [
+                'TagsCovered'
+            ],
         };
 
     })(jQuery);
