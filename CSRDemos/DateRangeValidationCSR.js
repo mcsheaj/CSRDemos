@@ -13,7 +13,7 @@
 
     dateRangeValidationRender = function(ctx) {
         var current = SPClientTemplates.Utility.GetFormContextForCurrentField(ctx);
-        var name = ctx.ListSchema.Field[0].Name;
+        var name = current.fieldName;
         
         // create a validator set
         var fieldValidators = new SPClientForms.ClientValidation.ValidatorSet();

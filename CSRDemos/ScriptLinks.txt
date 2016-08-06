@@ -1,19 +1,12 @@
-﻿~sitecollection/Style Library/jquery.js
-~sitecollection/Style Library/jquery-ui.js
-~sitecollection/Style Library/CSRConfig.js
-~sitecollection/Style Library/StarRatingsCSR.js
-~sitecollection/Style Library/EntityEditorCSR.js
+﻿Demo 1 - PassThroughCSR.js
 
+~sitecollection/Style Library/PassThroughCSR.js
+
+ScriptLinks (global)
+
+~sitecollection/Style Library/site.css
 ~sitecollection/Style Library/jquery.js
 ~sitecollection/Style Library/jquery-ui.js
-~sitecollection/Style Library/CSRConfig.js
-~sitecollection/Style Library/EntityEditorCSR.js
+~sitecollection/Style Library/jquery-ui.css
+~sitecollection/Style Library/jquery.spservices.js
 
-~sitecollection/Style Library/jquery.js
-~sitecollection/Style Library/CSRConfig.js
-~sitecollection/Style Library/StarRatingsCSR.js
-
-~sitecollection/Style Library/jquery.js|~sitecollection/Style Library/CSRConfig.js|~sitecollection/Style Library/StarRatingsCSR.js
-
-
-~sitecollection/Style Library/jquery.js|~sitecollection/Style Library/jquery-ui.js|~sitecollection/Style Library/AccordionViewCSR.js
