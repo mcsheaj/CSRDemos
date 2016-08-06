@@ -1,6 +1,6 @@
-﻿Demo 1 - PassThroughCSR.js
+﻿Demo 1 - OOB Rendering
 
-~sitecollection/Style Library/PassThroughCSR.js
+JobTitle = ~sitecollection/Style Library/PassThroughCSR.js
 
 ScriptLinks (global)
 
@@ -10,3 +10,15 @@ ScriptLinks (global)
 ~sitecollection/Style Library/jquery-ui.css
 ~sitecollection/Style Library/jquery.spservices.js
 
+Demo 2 - Type Ahead
+
+JobTitle = ~sitecollection/Style Library/AutocompleteCSR.js
+JobTitle = ~sitecollection/Style Library/Autocomplete2CSR.js
+
+Demo 3 - Cascading Lookups
+
+JobTitle = ~sitecollection/Style Library/CascadeDropdownsCSR.js
+
+Demo 4 - Date Range Validation
+
+JobTitle = ~sitecollection/Style Library/DateRangeValidationCSR.js
