@@ -31,7 +31,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="AccordionViewCSR.js" />
+    <Content Include="Autocomplete2CSR.js" />
+    <Content Include="AutocompleteCSR.js" />
+    <Content Include="CascadeDropdowns2CSR.js" />
+    <Content Include="CascadeDropdownsCSR.js" />
     <Content Include="CSRConfig.js" />
+    <Content Include="DateRangeValidationCSR.js" />
     <Content Include="entityeditor.css" />
     <Content Include="EntityEditorCSR.js" />
     <Content Include="images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -49,6 +54,8 @@
     <Content Include="jquery-ui.js" />
     <Content Include="jquery-ui.theme.css" />
     <Content Include="jquery.js" />
+    <Content Include="jquery.SPServices.js" />
+    <Content Include="PassThroughCSR.js" />
     <Content Include="ScriptLinks.txt" />
     <Content Include="SetCSRConfig.aspx">
       <SubType>ASPXCodeBehind</SubType>
@@ -66,6 +73,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="seattle_debug.master">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

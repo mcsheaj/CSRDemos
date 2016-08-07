@@ -234,14 +234,14 @@
                         if ($.inArray(v.name, csrConfigSetter.toDelete) > -1) {
                             csrConfigSetter.toDelete.splice($.inArray(v.name, csrConfigSetter.toDelete), 1);
                         }
-                        var table = $("#" + csrModule.name + "Table");
-                        var row = $("<tr/>", { "class": "config" });
-                        row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.name)));
-                        row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.displayName)));
-                        row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.type)));
-                        row.append(($("<td/>").html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>")))
-                        table.append(row);
-                        table.find("tr.empty").remove();
+                        var $table = $("#" + csrModule.name + "Table");
+                        var $row = $("<tr/>", { "class": "config" });
+                        $row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.name)));
+                        $row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.displayName)));
+                        $row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.type)));
+                        $row.append(($("<td/>").html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>")))
+                        $table.append($row);
+                        $table.find("tr.empty").remove();
                         $("#field").find("option").first().attr("selected", "selected");
                         $("#field").find("option[value='" + v.name + "']").remove();
                         $("#addCsr").button("option", "disabled", true);
@@ -257,7 +257,7 @@
                 wireDeleteButtons: function () {
                     $(".csr-fields").on("click", ".ui-icon-closethick", function (e) {
                         var span = $(e.target);
-                        var table = span.closest("table");
+                        var $table = span.closest("table");
                         var tr = span.closest("tr");
                         var name = $(tr.children()[0]).text();
                         if ($.inArray(name, csrConfigSetter.toDelete) < 0) {
@@ -265,8 +265,8 @@
                         }
                         tr.remove();
                         $("#csrType").val("");
-                        if (table.find("td").length === 0) {
-                            table.append((
+                        if ($table.find("td").length === 0) {
+                            $table.append((
                                 $("<tr/>", { "class": "empty" }).html("<td class='ui-widget-content ui-corner-all nobr' colspan='3'>There currently are no fields configured to use this CSR.</td>")
                             ));
                         }
@@ -418,7 +418,7 @@
                                     newAction.set_scriptBlock("document.write(\"<link rel='stylesheet' type='text/css' href='" + css + "'>\");");
                                 }
                                 newAction.set_sequence(59000 + i);
-                                newAction.set_title("Scriptlink Setter File #" + i);
+                                newAction.set_title("CSRConfig Setter File #" + i);
                                 newAction.set_description("Set programmaically by SetScriptlink.aspx.");
                                 newAction.update();
                             }
@@ -442,7 +442,7 @@
                         var toDelete = [];
                         while (enumerator.moveNext()) {
                             var action = enumerator.get_current();
-                            if (/^Scriptlink Setter File #/.test(action.get_title())) {
+                            if (/^CSRConfig Setter File #/.test(action.get_title())) {
                                 toDelete.push(action);
                             }
                         }
@@ -507,8 +507,8 @@
                 ////////////////////////////////////////////////////////////////////////////////
                 getConfig: function (id) {
                     var result = [];
-                    var table = $("#" + id);
-                    $.each(table.find("tr.config"), function (i, tr) {
+                    var $table = $("#" + id);
+                    $.each($table.find("tr.config"), function (i, tr) {
                         result.push($($(tr).children()[0]).text());
                     });
                     return result;
@@ -518,32 +518,32 @@
                 // Construct and inject a single configuration table into the DOM.
                 ////////////////////////////////////////////////////////////////////////////////
                 drawCSRTable: function (csrModule) {
-                    var div = $("#csrModuleTables");
-                    div.append($("<h3/>").text(csrModule.displayName + " Fields"));
-                    var table = $("<table/>", { "id": csrModule.name + "Table", "class": "csr-fields" });
-                    div.append(table);
+                    var $div = $("#csrModuleTables");
+                    $div.append($("<h3/>").text(csrModule.displayName + " Fields"));
+                    var $table = $("<table/>", { "id": csrModule.name + "Table", "class": "csr-fields" });
+                    $div.append($table);
 
-                    var headers = $("<tr/>");
-                    headers.append($("<th/>", { "class": "name ui-widget-header ui-corner-all nobr" }).text("Internal Name"));
-                    headers.append($("<th/>", { "class": "displayname ui-widget-header ui-corner-all nobr" }).text("DisplayName"));
-                    headers.append($("<th/>", { "class": "type ui-widget-header ui-corner-all nobr" }).text("Field Type"));
-                    headers.append($("<th/>", { "class": "delete" }));
-                    table.append(headers);
+                    var $headers = $("<tr/>");
+                    $headers.append($("<th/>", { "class": "name ui-widget-header ui-corner-all nobr" }).text("Internal Name"));
+                    $headers.append($("<th/>", { "class": "displayname ui-widget-header ui-corner-all nobr" }).text("DisplayName"));
+                    $headers.append($("<th/>", { "class": "type ui-widget-header ui-corner-all nobr" }).text("Field Type"));
+                    $headers.append($("<th/>", { "class": "delete" }));
+                    $table.append($headers);
 
                     var config = $.csrConfig[csrModule.name + "Fields"];
                     $.each($(config), function (i, k) {
                         var v = csrConfigSetter[csrModule.name][k];
                         if (typeof (v) !== "undefined") {
-                            var row = $("<tr/>", { "class": "config" });
-                            row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.name)));
-                            row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.displayName)));
-                            row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.type)));
-                            row.append(($("<td/>").html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>")))
-                            table.append(row);
+                            var $row = $("<tr/>", { "class": "config" });
+                            $row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.name)));
+                            $row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.displayName)));
+                            $row.append(($("<td/>", { "class": "ui-widget-content ui-corner-all nobr" }).html(v.type)));
+                            $row.append(($("<td/>").html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>")))
+                            $table.append($row);
                         }
                     });
-                    if (table.find("td").length === 0) {
-                        table.append((
+                    if ($table.find("td").length === 0) {
+                        $table.append((
                             $("<tr/>", { "class": "empty" }).html("<td class='ui-widget-content ui-corner-all nobr' colspan='3'>There currently are no fields configured to use this CSR.</td>")
                         ));
                     }
