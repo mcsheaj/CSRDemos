@@ -17,34 +17,34 @@
                 Templates: {
                     // override the header render
                     Header: function (ctx) {
-                        var result = $("<p/>");
-                        result.append($("<a/>", {
+                        var $result = $("<p/>");
+                        $result.append($("<a/>", {
                             "class": "expand",
                             "href": "javascript:void(0)",
                             "style": "margin-right: 10px; text-decoration: underline"
                         }).text("Expand"));
-                        result.append($("<a/>", {
+                        $result.append($("<a/>", {
                             "class": "collapse",
                             "href": "javascript:void(0)",
                             "style": "text-decoration: underline"
                         }).text("Collapse"));
-                        return result.html();
+                        return $result.html();
                     },
 
                     // override the item render
                     Item: function (ctx) {
-                        var result = $("<p/>");
-                        var div = $("<div/>", {
+                        var $result = $("<p/>");
+                        var $div = $("<div/>", {
                             "class": "accordion",
                             "style": "width: 800px"
                         });
-                        div.append($("<h3/>", {
+                        $div.append($("<h3/>", {
                             "class": "accordion-part",
                             "style": "font-weight: bold;"
                         }).text(ctx.CurrentItem.Title));
-                        div.append($("<div/>", { "class": "accordion-part" }).html(ctx.CurrentItem.Body));
-                        result.append(div);
-                        return result.html();
+                        $div.append($("<div/>", { "class": "accordion-part" }).html(ctx.CurrentItem.Body));
+                        $result.append($div);
+                        return $result.html();
                     },
 
                     // override the footer render

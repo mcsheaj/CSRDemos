@@ -33,6 +33,7 @@
     <Content Include="AccordionViewCSR.js" />
     <Content Include="Autocomplete2CSR.js" />
     <Content Include="AutocompleteCSR.js" />
+    <Content Include="CascadeDropdowns2CSR.js" />
     <Content Include="CascadeDropdownsCSR.js" />
     <Content Include="CSRConfig.js" />
     <Content Include="DateRangeValidationCSR.js" />

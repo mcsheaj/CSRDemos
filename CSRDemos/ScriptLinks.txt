@@ -18,6 +18,7 @@ JobTitle = ~sitecollection/Style Library/Autocomplete2CSR.js
 Demo 3 - Cascading Lookups
 
 JobTitle = ~sitecollection/Style Library/CascadeDropdownsCSR.js
+JobTitle = ~sitecollection/Style Library/CascadeDropdowns2CSR.js
 
 Demo 4 - Date Range Validation
 

@@ -52,10 +52,10 @@
         // register a callback method for the validators
         current.registerValidationErrorCallback(current.fieldName, function(error) {
             $td = $("input[id^='" + current.fieldName + "'][id$='DateTimeFieldDate']").closest("td");
-            if (td.find("span[role='alert']").length > 0) {
-                td.find("span[role='alert']").html(error.errorMessage);
+            if ($td.find("span[role='alert']").length > 0) {
+                $td.find("span[role='alert']").html(error.errorMessage);
             } else {
-                td.append($("<span/>", { role: "alert" }).html(error.errorMessage));
+                $td.append($("<span/>", { role: "alert" }).html(error.errorMessage));
             }
         });
 

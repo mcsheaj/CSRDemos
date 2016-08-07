@@ -181,7 +181,7 @@
          * Select an entity from the autocomplete list.
          */
         selectEntity: function (fieldName, value, entityEditorInput) {
-            var span = $("<span>", {
+            var $span = $("<span>", {
                 "class": "csrdemos-entity",
                 "title": value,
                 "data-fieldname": fieldName
@@ -192,8 +192,8 @@
                 "title": "Remove Entity",
                 "data-fieldname": fieldName,
                 "data-value": value
-            }).text("x").appendTo(span);
-            span.insertBefore(entityEditorInput);
+            }).text("x").appendTo($span);
+            $span.insertBefore(entityEditorInput);
 
             $.entityEditorImpl.source[fieldName].splice(
                 $.inArray(value, $.entityEditorImpl.source[fieldName]), 1);
@@ -309,8 +309,8 @@
     entityEditorOverrides.OnPostRender = function (ctx) {
         var fieldName = ctx.ListSchema.Field[0].Name;
         if ($.inArray(fieldName, $.csrConfig.entityEditorFields) > -1) {
-            var div = $("#" + fieldName + "EntityEditor");
-            var input = div.find("input.csrdemos-entityeditorinput");
+            var $div = $("#" + fieldName + "EntityEditor");
+            var input = $div.find("input.csrdemos-entityeditorinput");
 
             // initialize the jquery-ui autocomplete on the input
             input.autocomplete({
@@ -353,9 +353,8 @@
             });
 
             // if the outer div receives a click event, put focus on the input
-            div.click(function (e) {
-                var div = $(e.target);
-                div.find(".csrdemos-entityeditorinput").focus();
+            $div.click(function (e) {
+                $(e.target).find(".csrdemos-entityeditorinput").focus();
             });
         }
     };

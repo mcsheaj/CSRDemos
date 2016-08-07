@@ -1,4 +1,11 @@
-(function($) {
+/*
+ *  @copyright 2016 Joe McShea
+ *  @license under the MIT license:
+ *     http://www.opensource.org/licenses/mit-license.php
+ *
+ *  Inproved Autocomplete with configuable lookup list and field.
+ */
+(function ($) {
     // this structure is the only thing that needs to be modified to override more or different fields
     var fields = {
         "Company": {
