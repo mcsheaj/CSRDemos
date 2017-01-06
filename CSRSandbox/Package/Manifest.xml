@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Solution xmlns="http://schemas.microsoft.com/sharepoint/"
-         SolutionId="9ccc41a6-cfda-43bc-b025-6012e81c8420" >
-    <FeatureManifests>
-        <FeatureManifest Location="CSRSandbox\Feature.xml"/>
-    </FeatureManifests>
-</Solution>

@@ -68,6 +68,8 @@
     <Content Include="starratings.css" />
     <Content Include="StarRatingsCSR.js" />
     <Content Include="stars.png" />
+    <Content Include="TabbedFormCSR.js" />
+    <Content Include="TabbedForms.css" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

@@ -1,0 +1,38 @@
+﻿.tabs {
+    border-bottom: 1px solid #ddd;
+    content: " ";
+    display: table;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+    width: 100%;
+}
+
+    .tabs > li {
+        float: left;
+        margin-bottom: -1px;
+        position: relative;
+        display: block;
+    }
+
+        .tabs > li > a {
+            margin-right: 2px;
+            line-height: 1.42857143;
+            border: 1px solid transparent;
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+        }
+
+    .tabs a {
+        color: #428bca;
+        text-decoration: none;
+    }
+
+    .tabs > li.active > a, .tabs > li.active > a:hover, .tabs > li.active > a:focus {
+        color: #555;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-bottom-color: transparent;
+        cursor: default;
+    }
