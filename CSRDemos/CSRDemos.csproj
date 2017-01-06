@@ -31,9 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="AccordionViewCSR.js" />
-    <Content Include="Autocomplete2CSR.js" />
     <Content Include="AutocompleteCSR.js" />
-    <Content Include="CascadeDropdowns2CSR.js" />
     <Content Include="CascadeDropdownsCSR.js" />
     <Content Include="CSRConfig.js" />
     <Content Include="DateRangeValidationCSR.js" />
@@ -55,7 +53,7 @@
     <Content Include="jquery-ui.theme.css" />
     <Content Include="jquery.js" />
     <Content Include="jquery.SPServices.js" />
-    <Content Include="PassThroughCSR.js" />
+    <Content Include="CSRSpy.js" />
     <Content Include="ScriptLinks.txt" />
     <Content Include="SetCSRConfig.aspx">
       <SubType>ASPXCodeBehind</SubType>

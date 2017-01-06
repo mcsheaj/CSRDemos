@@ -3,7 +3,7 @@
  *  @license under the MIT license:
  *     http://www.opensource.org/licenses/mit-license.php
  *
- *  Cascade dropdowns using OnPostRender.  Works fine as long as the parent lookup is rendered before the child.
+ *  Cascade dropdowns using registerInitCallback.  Works regardless of the rendering order.
  */
 (function ($) {
     // this structure is the only thing that needs to be modified to override more or different fields
@@ -26,28 +26,56 @@
 
     var keys = Object.keys(fields);
 
+    cascadeDropdowsRender = function (ctx) {
+        var formCtx = SPClientTemplates.Utility.GetFormContextForCurrentField(ctx);
+
+        var html = getDefaultRendering(ctx);
+
+        // init callback is called after all fields have been rendered
+        formCtx.registerInitCallback(formCtx.fieldName, function (localCtx) {
+            var config = fields[formCtx.fieldName];
+
+            var options = {
+                parentColumn: config.parent,
+                childColumn: config.child,
+                relationshipList: config.relationshipList,
+                relationshipListParentColumn: config.relationshipParent,
+                relationshipListChildColumn: config.relationshipChild,
+                debug: true
+            };
+
+            $().SPServices.SPCascadeDropdowns(options);
+        });
+
+        return html;
+    }
+
+    var getDefaultRendering = function (ctx) {
+        var templatesByType = SPClientTemplates._defaultTemplates.Fields.default.all.all;
+        var currentTemplates = templatesByType[ctx.CurrentFieldSchema.Type];
+        var currentRenderFunc = currentTemplates[ctx.BaseViewID];
+        return currentRenderFunc(ctx);
+    }
+
     /*
      * Create an empty overrides object.
      */
     var overrides = {
-        // called after the child field has been rendered, assumes the parent has been rendered
-        OnPostRender: function(ctx) {
-            if ($.inArray(ctx.ListSchema.Field[0].Name, keys) > -1) {
-                var config = fields[ctx.ListSchema.Field[0].Name];
-
-                var options = {
-                    parentColumn: config.parent,
-                    childColumn: config.child,
-                    relationshipList: config.relationshipList,
-                    relationshipListParentColumn: config.relationshipParent,
-                    relationshipListChildColumn: config.relationshipChild,
-                    debug: true
-                };
-
-                $().SPServices.SPCascadeDropdowns(options);
-            }
+        Templates: {
+            'Fields': {}
         }
     };
+
+    /*
+     * Add an overrides object for each field we want to customize.
+     */
+    for (var i = 0; i < keys.length; i++) {
+        var current = keys[i];
+        overrides.Templates.Fields[current] = {
+            'NewForm': cascadeDropdowsRender,
+            'EditForm': cascadeDropdowsRender
+        };
+    }
 
     // check for MDS
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
@@ -55,7 +83,7 @@
         var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
             '/Style%20Library/AutocompleteCSR.js';
         // register a callback to register the templates on partial page loads
-        RegisterModuleInit(url.toLowerCase(), function() {
+        RegisterModuleInit(url.toLowerCase(), function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(overrides);
         });
     }

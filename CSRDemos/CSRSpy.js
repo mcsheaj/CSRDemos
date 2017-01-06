@@ -12,7 +12,7 @@
         "StartDate"
     ];
 
-    passThroughOverride = function(ctx) {
+    spy = function(ctx) {
         // get the default templates for each field type
         var templatesByType = SPClientTemplates._defaultTemplates.Fields.default.all.all;
         // get the default templates for the current field type
@@ -40,9 +40,9 @@
     for(var i=0; i<fields.length; i++) {
         var current = fields[i];
         overrides.Templates.Fields[current] = {
-            'NewForm': passThroughOverride,
-            'EditForm': passThroughOverride,
-            'DisplayForm': passThroughOverride
+            'NewForm': spy,
+            'EditForm': spy,
+            'DisplayForm': spy
         };
     }
 
