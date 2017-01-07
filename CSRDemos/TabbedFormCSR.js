@@ -1,10 +1,13 @@
-﻿// Adapted from Office Dev PnP CSR samples by Muawiyah Shannak, @MuShannak 
+﻿(function ($) {
+    // test is form with client side rendering
+    if (typeof (SPClientTemplates) === 'undefined')
+        return;
 
-(function ($) {
     var tabs = [
-        ["General", ["Title", "Age", "Married", "Mobile", "SSN"]],
-        ["Work", ["Manager", "Salary", "Phone", "Email"]],
-        ["Other", ["Comments"]]
+        ["Basic", ["Title", "FirstName", "FullName", "Company", "JobTitle", "ContentType"]],
+        ["Address", ["WorkAddress", "WorkCity", "WorkState", "WorkZip", "WorkCountry"]],
+        ["Phone", ["WorkPhone", "WorkFax", "CellPhone", "HomePhone"]],
+        ["Miscellaneous", ["Email", "WebPage", "Comments"]]
     ];
 
     var formWebPartId;
@@ -19,22 +22,18 @@
             // construct the unordered list to represent the tabs, and insert it into the web part div
             var tabsHTML = "";
             for (var i = 0; i < tabs.length; i++) {
-                tabClass = "";
-                if (i == 0) { tabClass = "active"; }
-                tabsHTML += "<li class='{Class}'><a href='#{Index}'>{Title}</a></li>".replace(/{Index}/g, i).replace(/{Title}/g, tabs[i][0]).replace(/{Class}/g, (i == 0 ? "active" : ""));
+                tabsHTML += "<li class='{Class}'><a id='anchor{Index}' href='#{Index}'>{Title}</a></li>".replace(/{Index}/g, i).replace(/{Title}/g, tabs[i][0]).replace(/{Class}/g, (i == 0 ? "active" : ""));
             }
-            $("#" + formWebPartId).prepend(getCss() + "<ul class='tabs'>" + tabsHTML + "</ul>");
+            $("#" + formWebPartId).addClass("form-webpart").prepend(getCss() + "<ul class='tabs'>" + tabsHTML + "</ul>");
 
             // add a click event handler to each of the tabs anchors.
             $('.tabs li a').on('click', function (e) {
-                var currentIndex = $(this).attr('href').replace("#", "");
-                showTabControls(currentIndex);
-                $(this).parent('li').addClass('active').siblings().removeClass('active');
+                selectTab($(this).attr('href').replace("#", ""));
                 e.preventDefault();
             });
 
             $(document).ready(function () {
-                showTabControls(0); // set the active tab to 0
+                selectTab(0); // set the active tab to 0
             });
         }
     }
@@ -48,9 +47,12 @@
     }
 
     /*
-     * Show all fields on the indexed tab, hide all others.
+     * Show all fields on the selected tab, hide all others, and mark the selected tab as active.
      */
-    function showTabControls(index) {
+    function selectTab(index) {
+        var anchor = $('#anchor' + index);
+        anchor.parent('li').addClass('active').siblings().removeClass('active');
+
         $("#" + formWebPartId + " [id^='tr_']").hide();
 
         for (var i = 0; i < tabs[index][1].length; i++) {
@@ -79,43 +81,70 @@
     function getCss() {
         return (function () {/*
             <style type='text/css'>
-            .tabs {
-                border-bottom: 1px solid #ddd;
-                content: " ";
-                display: table;
-                margin-bottom: 0;
-                padding-left: 0;
-                list-style: none;
-                width: 100%;
-            }
-
-                .tabs > li {
-                    float: left;
-                    margin-bottom: -1px;
-                    position: relative;
-                    display: block;
+                .tabs {
+                    border-bottom: 1px solid #ddd;
+                    content: " ";
+                    display: table;
+                    margin-bottom: 0px;
+                    padding-left: 10px;
+                    padding-top: 5px;
+                    padding-bottom: 1px;
+                    list-style: none;
+                    width: 100%;
+                    background: #35414f;
+                    border-radius: 3px;
+                    margin-top: 5px;
                 }
 
-                    .tabs > li > a {
-                        margin-right: 2px;
-                        line-height: 1.42857143;
-                        border: 1px solid transparent;
+                    .tabs > li {
+                        float: left;
+                        margin-bottom: -1px;
                         position: relative;
                         display: block;
-                        padding: 10px 15px;
                     }
 
-                .tabs a {
-                    color: #428bca;
-                    text-decoration: none;
+                        .tabs > li > a {
+                            margin-right: 4px;
+                            line-height: 1.4285;
+                            border: 1px solid grey;
+                            position: relative;
+                            display: block;
+                            padding: 10px 15px;
+                            border-top-left-radius: 3px;
+                            border-top-right-radius: 3px;
+                            background: #93c3cd;
+                            color: darkslategray;
+                            font-weight: bold;
+                        }
+
+                            .tabs > li > a:hover {
+                                background: #e1e463;
+                            }
+
+                    .tabs a {
+                        color: #428bca;
+                        text-decoration: none;
+                    }
+
+                    .tabs > li.active > a, .tabs > li.active > a:hover, .tabs > li.active > a:focus {
+                        color: white;
+                        border: 1px solid #db4865;
+                        border-bottom-color: transparent;
+                        cursor: default;
+                        border-top-right-radius: 5px;
+                        border-top-left-radius: 5px;
+                        background: #db4865;
+                        font-weight: bold;
+                    }
+
+                .form-webpart {
+                    border: 1px solid #93c3cd;
+                    padding: 0 15px 20px 5px;
+                    border-radius: 3px;
                 }
 
-                .tabs > li.active > a, .tabs > li.active > a:hover, .tabs > li.active > a:focus {
-                    color: #555;
-                    background-color: #fff;
-                    border: 1px solid #ddd;
-                    border-bottom-color: transparent;
-                    cursor: default;
+                .ms-formtable {
+                    margin: 15px;
                 }
             </style>
          */}).toString().split('\n').slice(1, -1).join('\n');

@@ -2,10 +2,15 @@
     border-bottom: 1px solid #ddd;
     content: " ";
     display: table;
-    margin-bottom: 0;
-    padding-left: 0;
+    margin-bottom: 0px;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 1px;
     list-style: none;
     width: 100%;
+    background: #35414f;
+    border-radius: 3px;
+    margin-top: 5px;
 }
 
     .tabs > li {
@@ -16,13 +21,22 @@
     }
 
         .tabs > li > a {
-            margin-right: 2px;
-            line-height: 1.42857143;
-            border: 1px solid transparent;
+            margin-right: 4px;
+            line-height: 1.4285;
+            border: 1px solid grey;
             position: relative;
             display: block;
             padding: 10px 15px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            background: #93c3cd;
+            color: darkslategray;
+            font-weight: bold;
         }
+
+            .tabs > li > a:hover {
+                background: #e1e463;
+            }
 
     .tabs a {
         color: #428bca;
@@ -30,9 +44,22 @@
     }
 
     .tabs > li.active > a, .tabs > li.active > a:hover, .tabs > li.active > a:focus {
-        color: #555;
-        background-color: #fff;
-        border: 1px solid #ddd;
+        color: white;
+        border: 1px solid #db4865;
         border-bottom-color: transparent;
         cursor: default;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
+        background: #db4865;
+        font-weight: bold;
     }
+
+.form-webpart {
+    border: 1px solid #93c3cd;
+    padding: 0 15px 20px 5px;
+    border-radius: 3px;
+}
+
+.ms-formtable {
+    margin: 15px;
+}
