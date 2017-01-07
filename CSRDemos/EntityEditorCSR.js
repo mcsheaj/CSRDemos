@@ -359,18 +359,17 @@
         }
     };
 
-    // register my template overrides
+    // register template overrides for partial page loads if MDS is enabled
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
-        // MDS is enabled
         var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
             '/Style%20Library/EntityEditorCSR.js';
-        // register a callback to register the templates on partial page loads
+
         RegisterModuleInit(url.toLowerCase(), function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
         });
     }
 
-    // also just register for full page loads (F5/refresh)
+    // also register templates now for non-MDS and full page loads
     SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
 })(jQuery);
 

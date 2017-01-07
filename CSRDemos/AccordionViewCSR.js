@@ -87,19 +87,17 @@
         }
     };
 
-    // register my template overrides
+    // register template overrides for partial page loads if MDS is enabled
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
-        // MDS is enabled
         var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
             '/_catalogs/masterpage/Display Templates/List Views/AccordionViewCSR.js';
-            //'/Style Library/AccordionViewCSR.js';
-        // register a callback to register the templates on partial page loads
+
         RegisterModuleInit(url, function () {
             $.accordionViewer.registerAccordionViewTemplate();
         });
     }
 
-    // also just register for full page loads (F5/refresh)
+    // also register templates now for non-MDS and full page loads
     $.accordionViewer.registerAccordionViewTemplate();
 })(jQuery);
 

@@ -46,6 +46,6 @@
         };
     }
 
-    // also just register for full page loads (F5/refresh)
+    // register the template overrides
     SPClientTemplates.TemplateManager.RegisterTemplateOverrides(overrides);
 })();

@@ -77,17 +77,16 @@
         };
     }
 
-    // check for MDS
+    // register template overrides for partial page loads if MDS is enabled
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
-        // MDS is enabled
         var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
             '/Style%20Library/AutocompleteCSR.js';
-        // register a callback to register the templates on partial page loads
+
         RegisterModuleInit(url.toLowerCase(), function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(overrides);
         });
     }
 
-    // also just register for full page loads (F5/refresh)
+    // also register templates now for non-MDS and full page loads
     SPClientTemplates.TemplateManager.RegisterTemplateOverrides(overrides);
 })(jQuery);
