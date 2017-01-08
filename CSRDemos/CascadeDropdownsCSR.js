@@ -23,10 +23,9 @@
             "relationshipChild": "Title"
         }
     };
-
     var keys = Object.keys(fields);
 
-    cascadeDropdowsRender = function (ctx) {
+    var cascadeDropdowsRender = function (ctx) {
         var formCtx = SPClientTemplates.Utility.GetFormContextForCurrentField(ctx);
 
         var html = getDefaultRendering(ctx);

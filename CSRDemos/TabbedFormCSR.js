@@ -4,10 +4,10 @@
         return;
 
     var tabs = [
-        ["Basic", ["Title", "FirstName", "FullName", "Company", "JobTitle", "ContentType"]],
+        ["Basic", ["Title", "FirstName", "FullName", "Company", "JobTitle", "ContentType", "BusinessUnit", "Skills"]],
         ["Address", ["WorkAddress", "WorkCity", "WorkState", "WorkZip", "WorkCountry"]],
         ["Phone", ["WorkPhone", "WorkFax", "CellPhone", "HomePhone"]],
-        ["Miscellaneous", ["Email", "WebPage", "Comments"]]
+        ["Miscellaneous", ["Email", "WebPage", "Comments", "SalesRegion", "SalesDivision", "SalesState"]]
     ];
 
     var formWebPartId;
@@ -42,8 +42,7 @@
      * As each field is rendered, add and id so it to the row to make it easy to find and hide the row.
      */
     function postRender(ctx) {
-        var controlId = ctx.ListSchema.Field[0].Name + "_" + ctx.ListSchema.Field[0].Id;
-        $("[id^='" + controlId + "']").closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();
+        $("[id^='" + ctx.ListSchema.Field[0].Name + "_" + ctx.ListSchema.Field[0].Id + "']").closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();
     }
 
     /*

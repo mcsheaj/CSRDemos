@@ -1,10 +1,9 @@
 ﻿Demo 1 - OOB Rendering
 
-JobTitle = ~sitecollection/Style Library/PassThroughCSR.js
+Company = ~sitecollection/Style Library/jquery.js|~sitecollection/Style Library/CSRSPY.js
 
 ScriptLinks (global)
 
-~sitecollection/Style Library/site.css
 ~sitecollection/Style Library/jquery.js
 ~sitecollection/Style Library/jquery-ui.js
 ~sitecollection/Style Library/jquery-ui.css

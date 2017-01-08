@@ -238,24 +238,16 @@
                     if (!scriptlinkSetter.clientContext) {
                         scriptlinkSetter.clientContext = new SP.ClientContext();
 
-                        if (!scriptlinkSetter.site) {
-                            scriptlinkSetter.site = scriptlinkSetter.clientContext.get_site();
-                        }
+                        scriptlinkSetter.site = scriptlinkSetter.clientContext.get_site();
 
-                        if (!scriptlinkSetter.siteUserCustomActions) {
-                            scriptlinkSetter.siteUserCustomActions = scriptlinkSetter.site.get_userCustomActions();
-                            scriptlinkSetter.clientContext.load(scriptlinkSetter.siteUserCustomActions);
-                            scriptlinkSetter.userCustomActions = scriptlinkSetter.siteUserCustomActions;
-                        }
+                        scriptlinkSetter.siteUserCustomActions = scriptlinkSetter.site.get_userCustomActions();
+                        scriptlinkSetter.clientContext.load(scriptlinkSetter.siteUserCustomActions);
+                        scriptlinkSetter.userCustomActions = scriptlinkSetter.siteUserCustomActions;
 
-                        if (!scriptlinkSetter.web) {
-                            scriptlinkSetter.web = scriptlinkSetter.clientContext.get_web();
-                        }
+                        scriptlinkSetter.web = scriptlinkSetter.clientContext.get_web();
 
-                        if (!scriptlinkSetter.webUserCustomActions) {
-                            scriptlinkSetter.webUserCustomActions = scriptlinkSetter.web.get_userCustomActions();
-                            scriptlinkSetter.clientContext.load(scriptlinkSetter.webUserCustomActions);
-                        }
+                        scriptlinkSetter.webUserCustomActions = scriptlinkSetter.web.get_userCustomActions();
+                        scriptlinkSetter.clientContext.load(scriptlinkSetter.webUserCustomActions);
 
                         scriptlinkSetter.clientContext.executeQueryAsync(success, failure);
                     }
@@ -276,11 +268,10 @@
                 ////////////////////////////////////////////////////////////////////////////////
                 arrayToTextArea: function (lines) {
                     if (lines) {
-                        var text = "";
-                        for (var i = 0; i < lines.length; i++) {
-                            text += lines[i] + "\n";
-                        }
-                        document.getElementById("scriptLinks").value = text;
+                        document.getElementById("scriptLinks").value = lines.join("\n");
+                    }
+                    else {
+                        document.getElementById("scriptLinks").value = "";
                     }
                 }
             };

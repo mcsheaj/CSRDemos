@@ -8,9 +8,16 @@
     if (typeof (SPClientTemplates) === 'undefined')
         return;
 
-    // test at least one field is configured to use the entity editor client side rendering
-    if (typeof ($.csrConfig) !== 'object' || typeof ($.csrConfig.entityEditorFields) !== 'object' || !$.csrConfig.entityEditorFields.length)
-        return;
+    
+    if (typeof ($.csrConfig) !== 'object')
+    {
+        $.csrConfig = {
+            entityEditorFields: [
+                'BusinessUnit',
+                'Skills'
+            ],
+        };
+    }
 
     // wish jQuery inArray had an ignore case option ;)
     $.inArrayIgnoreCase = function(value, array) {
@@ -264,7 +271,7 @@
         constructInput: function (ctx, current, entityEditor) {
             // add an input for the user to type into, this is the autocomplete input
             var input = $('<input/>', {
-                'id': current.fieldName + 'EntityEditorInput',
+                'id': current.fieldName + '_' + ctx.ListSchema.Field[0].Id + '_EntityEditorInput',
                 'name': current.fieldName + 'EntityEditorInput',
                 'type': 'text',
                 'class': 'csrdemos-entityeditorinput'

@@ -6,13 +6,13 @@
 (function () {
     // this array is the only thing that needs to be modified to override more or different fields
     var fields = [
-        "JobTitle",
-        "WorkAddress",
-        "SalesRegion",
-        "StartDate"
+        "Company",
+        "Address",
+        "WebPage",
+        "Comments"
     ];
 
-    spy = function(ctx) {
+    var spy = function(ctx) {
         // get the default templates for each field type
         var templatesByType = SPClientTemplates._defaultTemplates.Fields.default.all.all;
         // get the default templates for the current field type

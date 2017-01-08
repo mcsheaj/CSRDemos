@@ -17,18 +17,11 @@
             "field": "Title"
         }
     };
-
     var keys = Object.keys(fields);
 
-    autoCompleteRender = function (ctx) {
-        var $result = $(getDefaultRendering(ctx));
-        $result.find("input").addClass(ctx.ListSchema.Field[0].Name);
-        return $result[0].outerHTML;
-    }
-
-    autoCompletePostRender = function (ctx) {
+    var autoCompletePostRender = function (ctx) {
         if ($.inArray(ctx.ListSchema.Field[0].Name, keys) > -1) {
-            var $input = $("." + ctx.ListSchema.Field[0].Name);
+            var $input = $("[id^='" + ctx.ListSchema.Field[0].Name + "_" + ctx.ListSchema.Field[0].Id + "']");
             var config = fields[ctx.ListSchema.Field[0].Name];
             $().SPServices({
                 operation: "GetListItems",
@@ -64,22 +57,8 @@
      * Create an empty overrides object.
      */
     var overrides = {
-        Templates: {
-            'Fields': {}
-        },
         OnPostRender: autoCompletePostRender
     };
-
-    /*
-     * Add an overrides object for each field we want to customize.
-     */
-    for (var i = 0; i < keys.length; i++) {
-        var current = keys[i];
-        overrides.Templates.Fields[current] = {
-            'NewForm': autoCompleteRender,
-            'EditForm': autoCompleteRender
-        };
-    }
 
     // register template overrides for partial page loads if MDS is enabled
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
