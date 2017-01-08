@@ -15,11 +15,11 @@
             // declare an overrides instance
             var overrides = {
                 Templates: {
-                    Header: renderHeader,
-                    Item: renderItem,
+                    Header: accordionViewer.renderHeader,
+                    Item: accordionViewer.renderItem,
                     Footer: " "
                 },
-                OnPostRender: postRender
+                OnPostRender: accordionViewer.postRender
             };
 
             // register the overrides instance
