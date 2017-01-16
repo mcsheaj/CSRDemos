@@ -43,7 +43,9 @@
                 debug: true
             };
 
+            var currentValue = $("select[id^='" + formCtx.fieldName + "_']").val();
             $().SPServices.SPCascadeDropdowns(options);
+            $("select[id^='" + formCtx.fieldName + "_']").val(currentValue);
         });
 
         return html;
