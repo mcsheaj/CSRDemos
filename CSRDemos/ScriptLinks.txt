@@ -1,6 +1,13 @@
-﻿Demo 1 - OOB Rendering
+﻿Demo 1 - CSR Spy
 
-Company = ~sitecollection/Style Library/jquery.js|~sitecollection/Style Library/CSRSPY.js
+~sitecollection/Style Library/CSRSPY.js
+
+Demo 2 - Cascading Lookups
+
+SalesDivision & SalesState = 
+~sitecollection/Style Library/jquery.js
+~sitecollection/Style Library/jquery.SPServices.js
+~sitecollection/Style Library/CascadeDropdownsCSR.js
 
 ScriptLinks (global)
 
@@ -9,16 +16,19 @@ ScriptLinks (global)
 ~sitecollection/Style Library/jquery-ui.css
 ~sitecollection/Style Library/jquery.spservices.js
 
-Demo 2 - Type Ahead
+Demo 3 - Type Ahead
 
-JobTitle = ~sitecollection/Style Library/AutocompleteCSR.js
-JobTitle = ~sitecollection/Style Library/Autocomplete2CSR.js
+JobTitle = 
+~sitecollection/Style Library/AutocompleteCSR.js
 
-Demo 3 - Cascading Lookups
+Deom 4 - Tabbed Form
 
-JobTitle = ~sitecollection/Style Library/CascadeDropdownsCSR.js
-JobTitle = ~sitecollection/Style Library/CascadeDropdowns2CSR.js
+Employee = ~sitecollection/Style Library/TabbedFormCSR.js
 
-Demo 4 - Date Range Validation
+Demo 5 - Entity Editor
 
-JobTitle = ~sitecollection/Style Library/DateRangeValidationCSR.js
+BusinessUnit = ~sitecollection/Style Library/EntityEditorCSR.js
+
+Demo 6 - Accordion View
+
+place AccordionViewCSR.js in the master page gallery

@@ -12,13 +12,15 @@
         "Comments"
     ];
 
-    var spy = function(ctx) {
+    var spy = function (ctx) {
+        // get the list schema for all fields
+        var schema = window[ctx.FormUniqueId + "FormCtx"].ListSchema;
         // get the default templates for each field type
         var templatesByType = SPClientTemplates._defaultTemplates.Fields.default.all.all;
         // get the default templates for the current field type
-        var currentTemplates = templatesByType[ctx.CurrentFieldSchema.Type];
-        // get the render function by view id (i.e. NewForm, View, etc.)
-        var currentRenderFunc = currentTemplates[ctx.BaseViewID];
+        var currentTemplate = templatesByType[ctx.CurrentFieldSchema.Type];
+        // get the render function by view id (i.e. NewForm, EditForm, or DisplayForm)
+        var currentRenderFunc = currentTemplate[ctx.BaseViewID];
         // call the render function
         var result = currentRenderFunc(ctx);
         // do your own work here

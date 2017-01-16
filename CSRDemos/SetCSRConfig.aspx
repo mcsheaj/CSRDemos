@@ -8,6 +8,11 @@
     CSR Configuration
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderPageTitleInTitleArea' runat='server'>
+<!--
+ @copyright 2016-2017 Joe McShea
+ @license under the MIT license:
+    http://www.opensource.org/licenses/mit-license.php
+-->
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderAdditionalPageHead' runat='server'>
     <meta name='CollaborationServer' content='SharePoint Team Web Site' />

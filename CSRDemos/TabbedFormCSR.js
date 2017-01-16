@@ -20,11 +20,14 @@
             formWebPartId = "WebPart" + ctx.FormUniqueId;
 
             // construct the unordered list to represent the tabs, and insert it into the web part div
-            var tabsHTML = "";
+            var ul = $("<ul/>", { "class": "tabs" });
             for (var i = 0; i < tabs.length; i++) {
-                tabsHTML += "<li class='{Class}'><a id='anchor{Index}' href='#{Index}'>{Title}</a></li>".replace(/{Index}/g, i).replace(/{Title}/g, tabs[i][0]).replace(/{Class}/g, (i == 0 ? "active" : ""));
+                var li = $("<li/>", { "class": (i == 0 ? "active" : "") });
+                li.append($("<a/>", { "id": "anchor" + i, "href": "#" + i }).text(tabs[i][0]));
+                ul.append(li);
             }
-            $("#" + formWebPartId).addClass("form-webpart").prepend(getCss() + "<ul class='tabs'>" + tabsHTML + "</ul>");
+            $("#" + formWebPartId).prepend(ul);
+            $("#" + formWebPartId).addClass("form-webpart").prepend(getCss());
 
             // add a click event handler to each of the tabs anchors.
             $('.tabs li a').on('click', function (e) {
@@ -42,7 +45,10 @@
      * As each field is rendered, add and id so it to the row to make it easy to find and hide the row.
      */
     function postRender(ctx) {
-        $("[id^='" + ctx.ListSchema.Field[0].Name + "_" + ctx.ListSchema.Field[0].Id + "']").closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();
+        //$("[id^='" + ctx.ListSchema.Field[0].Name + "_" + ctx.ListSchema.Field[0].Id + "']").closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();
+        $("td.ms-formbody").filter(function (pos, item) {
+            return item.innerHTML.indexOf('FieldInternalName="' + ctx.ListSchema.Field[0].Name + '"') > 0;
+        }).closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();;
     }
 
     /*
@@ -146,7 +152,7 @@
                     margin: 15px;
                 }
             </style>
-         */}).toString().split('\n').slice(1, -1).join('\n');
+         */}).toString().slice(15, -3);
     }
 })(jQuery);
 

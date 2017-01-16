@@ -6,13 +6,13 @@
 <%@ Import Namespace="Microsoft.SharePoint" %>
 <asp:Content ContentPlaceHolderID='PlaceHolderPageTitle' runat='server'>
     Set JSLink on ContentType
+</asp:Content>
+<asp:Content ContentPlaceHolderID='PlaceHolderPageTitleInTitleArea' runat='server'>
 <!--
- @copyright 2016 Joe McShea
+ @copyright 2016-2017 Joe McShea
  @license under the MIT license:
     http://www.opensource.org/licenses/mit-license.php
 -->
-</asp:Content>
-<asp:Content ContentPlaceHolderID='PlaceHolderPageTitleInTitleArea' runat='server'>
 </asp:Content>
 <asp:Content ContentPlaceHolderID='PlaceHolderAdditionalPageHead' runat='server'>
 
@@ -57,6 +57,14 @@
                 <td>Content Type:</td>
                 <td>
                     <select id="contentTypeSelect">
+                        <option></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>List:</td>
+                <td>
+                    <select id="listSelect">
                         <option></option>
                     </select>
                 </td>
@@ -114,12 +122,13 @@
                             jslinkSetter.enumerateContentTypes();
                             jslinkSetter.initGroupSelect();
                             jslinkSetter.initContentTypeSelect();
+                            jslinkSetter.initListSelect();
                             jslinkSetter.initButton();
                             document.getElementById("setJsLink").disabled = true;
                             document.getElementById("form").style.display = "block";
                         },
-                        function () {
-                            alert("Could not load content types.");
+                        function (sender, args) {
+                            jslinkSetter.error("Could not load content types.", args);
                         }
                     );
                 },
@@ -209,6 +218,30 @@
                 },
 
                 ////////////////////////////////////////////////////////////////////////////////
+                // Initialize the list drop-down.
+                ////////////////////////////////////////////////////////////////////////////////
+                initListSelect: function () {
+                    var lists = jslinkSetter.web.get_lists();
+                    jslinkSetter.ctx.load(lists);
+                    jslinkSetter.ctx.executeQueryAsync(
+                        function () {
+                            var listSelect = document.getElementById("listSelect");
+                            var enumerator = lists.getEnumerator();
+                            while (enumerator.moveNext()) {
+                                var current = enumerator.get_current();
+                                var o = document.createElement("option");
+                                o.value = current.get_title();
+                                o.text = current.get_title();
+                                listSelect.appendChild(o);
+                            }
+                        },
+                        function (sender, args) {
+                            jslinkSetter.error("Could not load lists.", args);
+                        }
+                    );
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
                 // Initialize the button and add an onchange listener to it.
                 ////////////////////////////////////////////////////////////////////////////////
                 initButton: function () {
@@ -230,7 +263,7 @@
                                         break;
                                     }
                                 }
-                                // set jslink and update, note: true or false, no all changes are pushed down
+                                // set jslink and update, note: true or false, not all changes are pushed down
                                 // set jslink not supported for survey or event content types
                                 contentType.set_jsLink(document.getElementById("jslink").value.split("\n").join("|"));
                                 contentType.update(true);
@@ -238,20 +271,75 @@
                                     function () {
                                         // on success, update the cache and display a dialog
                                         jslinkSetter.options[name].jslink = document.getElementById("jslink").value.split("\n").join("|");
-                                        alert("Successfully updated content type '" + name + "'.");
+                                        var listSelect = document.getElementById("listSelect");
+                                        if (listSelect.options[listSelect.selectedIndex].value.length > 0) {
+                                            jslinkSetter.doItAgainOnTheListContentType(name);
+                                        }
+                                        else {
+                                            alert("Successfully updated content type '" + name + "'.");
+                                        }
                                     },
-                                    function () {
-                                        alert("Could not update content type '" + name + "'.");
+                                    function (sender, args) {
+                                        jslinkSetter.error("Could not update content type '" + name + "'.", args);
                                     }
                                 );
                             },
-                            function () {
-                                alert("Could not load content type '" + name + "'.");
+                            function (sender, args) {
+                                jslinkSetter.error("Could not load content type '" + name + "'.", args);
                             }
                         );
                     };
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Update the content type jslink on the list selected.
+                ////////////////////////////////////////////////////////////////////////////////
+                doItAgainOnTheListContentType: function (name) {
+                    var listSelect = document.getElementById("listSelect");
+                    var currentList = listSelect.options[listSelect.selectedIndex].value;
+                    var list = jslinkSetter.web.get_lists().getByTitle(currentList);
+                    var contentTypes = list.get_contentTypes();
+                    jslinkSetter.ctx.load(contentTypes);
+                    jslinkSetter.ctx.executeQueryAsync(
+                        function () {
+                            // no convenient getByTitle method exists for content types, find the hard way
+                            var contentType;
+                            var enumerator = contentTypes.getEnumerator();
+                            while (enumerator.moveNext()) {
+                                var current = enumerator.get_current();
+                                if (name === current.get_name()) {
+                                    contentType = current;
+                                    break;
+                                }
+                            }
+                            // set jslink and update, note: update(true) will fail with the message X has no children, must do update(false);
+                            if (contentType) {
+                                contentType.set_jsLink(document.getElementById("jslink").value.split("\n").join("|"));
+                                contentType.update(); // passing in true results in an error
+                                jslinkSetter.ctx.executeQueryAsync(
+                                    function () {
+                                        alert("Successfully updated content type '" + name + "'.");
+                                    },
+                                    function (sender, args) {
+                                        jslinkSetter.error("Failed to update content type '" + name + "' on list '" + currentList + "'.", args);
+                                    }
+                                );
+                            }
+                        },
+                        function (sender, args) {
+                            jslinkSetter.error("Could not load content types from list '" + currentList + "'.", args);
+                        }
+                    );
+                },
+
+                ////////////////////////////////////////////////////////////////////////////////
+                // Alert with useful information on an asynchronous callback error from SharePoint.
+                ////////////////////////////////////////////////////////////////////////////////
+                error: function (message, args) {
+                    alert(message + "\n\n" + args.get_errorTypeName() + ": " + args.get_message() + " (CorrelationId: " + args.get_errorTraceCorrelationId() + ")");
                 }
             };
+
             var jslinkSetter = intellipoint.jslinkSetter;
         })();
 
