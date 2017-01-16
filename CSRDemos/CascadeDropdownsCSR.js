@@ -43,9 +43,14 @@
                 debug: true
             };
 
-            var currentValue = $("select[id^='" + formCtx.fieldName + "_']").val();
             $().SPServices.SPCascadeDropdowns(options);
-            $("select[id^='" + formCtx.fieldName + "_']").val(currentValue);
+        });
+
+        // need to do get value callback because lookup updates it's value in an onchange handler declared in init callback
+        formCtx.registerGetValueCallback(formCtx.fieldName, function () {
+            var val = $("select[id^='" + formCtx.fieldName + "_']").val();
+            var text = $("select[id^='" + formCtx.fieldName + "_'] option:selected").text();
+            return (val == '0' || val == '' ? '' : val + ";#" + text);
         });
 
         return html;
