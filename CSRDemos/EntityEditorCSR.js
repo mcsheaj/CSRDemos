@@ -350,10 +350,10 @@
         /*
          * Add the input control to the entity editor
          */
-        constructInput: function (ctx, current, entityEditor) {
+        constructInput: function (ctx, entityEditor) {
             // add an input for the user to type into, this is the autocomplete input
             var input = $('<input/>', {
-                'id': ctx.CurrentFieldSchema.Name + '_' + ctx.ListSchema.Field[0].Id + '_EntityEditorInput',
+                'id': ctx.CurrentFieldSchema.Name + '_' + ctx.CurrentFieldSchema.Id + '_EntityEditorInput',
                 'name': ctx.CurrentFieldSchema.Name + 'EntityEditorInput',
                 'type': 'text',
                 'class': 'csrdemos-entityeditorinput'
