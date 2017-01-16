@@ -1,5 +1,5 @@
 /*
- *  @copyright 2016 Joe McShea
+ *  @copyright 2016-2017 Joe McShea
  *  @license under the MIT license:
  *     http://www.opensource.org/licenses/mit-license.php
  *
@@ -18,6 +18,14 @@
         }
     };
     var keys = Object.keys(fields);
+
+    var addedCss = false;
+    var autoCompleteOnPreRender = function (ctx) {
+        if (!addedCss) {
+            $("head").append("<link rel='stylesheet' type='text/css' href='" + _spPageContextInfo.siteAbsoluteUrl + "/Style Library/jquery-ui.css'>");
+            addedCss = true;
+        }
+    }
 
     var autoCompletePostRender = function (ctx) {
         if ($.inArray(ctx.ListSchema.Field[0].Name, keys) > -1) {
@@ -57,6 +65,7 @@
      * Create an empty overrides object.
      */
     var overrides = {
+        OnPreRender: autoCompleteOnPreRender,
         OnPostRender: autoCompletePostRender
     };
 

@@ -1,5 +1,5 @@
 ﻿/*
- *  @copyright 2016 Joe McShea
+ *  @copyright 2016-2017 Joe McShea
  *  @license under the MIT license:
  *     http://www.opensource.org/licenses/mit-license.php
  */
