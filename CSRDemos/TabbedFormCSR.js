@@ -45,10 +45,9 @@
      * As each field is rendered, add and id so it to the row to make it easy to find and hide the row.
      */
     function postRender(ctx) {
-        //$("[id^='" + ctx.ListSchema.Field[0].Name + "_" + ctx.ListSchema.Field[0].Id + "']").closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();
         $("td.ms-formbody").filter(function (pos, item) {
             return item.innerHTML.indexOf('FieldInternalName="' + ctx.ListSchema.Field[0].Name + '"') > 0;
-        }).closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();;
+        }).closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();
     }
 
     /*

@@ -2,12 +2,13 @@
 
 ~sitecollection/Style Library/CSRSPY.js
 
-Demo 2 - Cascading Lookups
+Demo 2 - Type Ahead
 
-SalesDivision & SalesState = 
+JobTitle & Company = 
 ~sitecollection/Style Library/jquery.js
-~sitecollection/Style Library/jquery.SPServices.js
-~sitecollection/Style Library/CascadeDropdownsCSR.js
+~sitecollection/Style Library/jquery-ui.js
+~sitecollection/Style Library/jquery.spservices.js
+~sitecollection/Style Library/AutocompleteCSR.js
 
 ScriptLinks (global)
 
@@ -16,12 +17,12 @@ ScriptLinks (global)
 ~sitecollection/Style Library/jquery-ui.css
 ~sitecollection/Style Library/jquery.spservices.js
 
-Demo 3 - Type Ahead
+Demo 3 - Cascading Lookups
 
-JobTitle = 
-~sitecollection/Style Library/AutocompleteCSR.js
+SalesDivision & SalesState = 
+~sitecollection/Style Library/CascadeDropdownsCSR.js
 
-Deom 4 - Tabbed Form
+Demo 4 - Tabbed Form
 
 Employee = ~sitecollection/Style Library/TabbedFormCSR.js
 

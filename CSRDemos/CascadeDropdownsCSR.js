@@ -31,7 +31,7 @@
         var html = getDefaultRendering(ctx);
 
         // init callback is called after all fields have been rendered
-        formCtx.registerInitCallback(formCtx.fieldName, function (localCtx) {
+        formCtx.registerInitCallback(formCtx.fieldName, function () {
             var config = fields[formCtx.fieldName];
 
             var options = {

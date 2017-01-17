@@ -54,13 +54,6 @@
         }
     }
 
-    var getDefaultRendering = function (ctx) {
-        var templatesByType = SPClientTemplates._defaultTemplates.Fields.default.all.all;
-        var currentTemplates = templatesByType[ctx.CurrentFieldSchema.Type];
-        var currentRenderFunc = currentTemplates[ctx.BaseViewID];
-        return currentRenderFunc(ctx);
-    }
-
     /*
      * Create an empty overrides object.
      */

@@ -4,6 +4,8 @@
  *     http://www.opensource.org/licenses/mit-license.php
  */
 (function () {
+    var addedCss = false;
+
     /*
      * Implementation class for the overrides.
      */
@@ -14,6 +16,7 @@
         registerAccordionViewTemplate: function () {
             // declare an overrides instance
             var overrides = {
+                OnPreRender: accordionViewer.preRender,
                 Templates: {
                     Header: accordionViewer.renderHeader,
                     Item: accordionViewer.renderItem,
@@ -63,6 +66,16 @@
         },
 
         /*
+         * Add jquery-ui css.
+         */
+        preRender(ctx) {
+            if (!addedCss) {
+                $("head").append("<link rel='stylesheet' type='text/css' href='" + _spPageContextInfo.siteAbsoluteUrl + "/Style Library/jquery-ui.css'>");
+                addedCss = true;
+            }
+        },
+
+        /*
          * Call jquery-ui accordion and wire up the expand and collapse anchors.
          */
         postRender: function (ctx) {
@@ -82,17 +95,6 @@
                 $(".accordion").accordion({ active: false });
             });
         },
-
-        // shove a jquery-ui.css reference into the head
-        getCss: function () {
-            if (!$('body').attr('data-accordionviewcss')) {
-                var css = _spPageContextInfo.siteAbsoluteUrl +
-                    '/Style%20Library/jquery-ui.css';
-                $('head').append(
-                    '<link rel="stylesheet" type="text/css" href="' + css + '">');
-                $('body').attr('data-accordionviewcss', 'true');
-            }
-        }
     };
 
     // register template overrides for partial page loads if MDS is enabled
