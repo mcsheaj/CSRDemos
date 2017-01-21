@@ -6,10 +6,10 @@
 (function () {
     // this array is the only thing that needs to be modified to override more or different fields
     var fields = [
+        "SalesRegion",
         "FullName",
         "Address",
-        "WebPage",
-        "Comments"
+        "WebPage"
     ];
 
     var spy = function (ctx) {
