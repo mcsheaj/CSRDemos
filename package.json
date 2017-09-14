@@ -1,0 +1,26 @@
+{
+  "name": "csrdemos",
+  "version": "1.0.0",
+  "description": "Demos for the SharePoint Saturday Session 'Spice up Your Forms and Views: Deep Dive into Client Side Rendering'",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcsheaj/CSRDemos.git"
+  },
+  "keywords": [
+    "sharepoint",
+    "csr",
+    "client",
+    "side",
+    "rendering"
+  ],
+  "author": "Joe McShea",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcsheaj/CSRDemos/issues"
+  },
+  "homepage": "https://github.com/mcsheaj/CSRDemos#readme"
+}
