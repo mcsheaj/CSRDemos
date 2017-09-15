@@ -64,10 +64,8 @@
 
     // register template overrides for partial page loads if MDS is enabled
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
-        var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
-            '/Style%20Library/AutocompleteCSR.js';
-
-        RegisterModuleInit(url.toLowerCase(), function () {
+        var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl).toLowerCase();
+        RegisterModuleInit(url + '/style%20library/autocompletecsr.js', function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(overrides);
         });
     }

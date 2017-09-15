@@ -1,5 +1,5 @@
 ﻿/*
- *  @copyright 2016-2017 Joe McShea
+ *  @copyright 2016 Joe McShea
  *  @license under the MIT license:
  *     http://www.opensource.org/licenses/mit-license.php
  */
@@ -7,25 +7,17 @@
     // test is form with client side rendering
     if (typeof (SPClientTemplates) === 'undefined')
         return;
- 
-    if (typeof ($.csrConfig) !== 'object')
-    {
-        $.csrConfig = {
-            entityEditorFields: [
-                'BusinessUnit',
-                'Skills'
-            ],
-        };
-    }
+
+    // test at least one field is configured to use the entity editor client side rendering
+    if (typeof ($.csrConfig) !== 'object' || typeof ($.csrConfig.entityEditorFields) !== 'object' || !$.csrConfig.entityEditorFields.length)
+        return;
 
     // wish jQuery inArray had an ignore case option ;)
-    $.inArrayIgnoreCase = function(value, array) {
+    $.inArrayIgnoreCase = function (value, array) {
         value = value.toLowerCase();
         array = array.map(function (v) { return v.toLowerCase(); });
         return $.inArray(value, array);
     };
-
-    var formWebPartId;
 
     /*
      * Implementation class for the overrides.
@@ -35,21 +27,20 @@
         schema: {},
 
         /*
-         * Implementation for the display form and views.
-         */
+        * Implementation for the display form and views.
+        */
         displayMethod: function (ctx) {
-            $.entityEditorImpl.getCss(ctx);
+            var result = $("<div/>");
+            var values = ctx.CurrentItem[ctx.CurrentFieldSchema.Name];
+            if (values.length > 0) {
+                if (typeof (values) === "string") {
+                    values = values.split(";");
+                }
 
-            // save some stuff from the schema we're going to need later
-            $.entityEditorImpl.source[ctx.CurrentFieldSchema.Name] = ctx.CurrentFieldSchema.MultiChoices;
-            $.entityEditorImpl.schema[ctx.CurrentFieldSchema.Name] = ctx.CurrentFieldSchema;
-
-            // construct the outer html for our control
-            var result = $.entityEditorImpl.constructOuterContainer(ctx, false);
-
-            // initialize the editor with current values
-            $.entityEditorImpl.constructInitialEntities(ctx, result, false);
-
+                $.each(values, function (index, value) {
+                    result.append($("<span/>").attr("class", "csrdemos-entity").text(value));
+                });
+            }
             return result.html();
         },
 
@@ -57,21 +48,30 @@
          * Implementation for the new and edit forms.
          */
         inputMethod: function (ctx) {
-            $.entityEditorImpl.getCss(ctx);
+            $.entityEditorImpl.getCss();
+            var current = SPClientTemplates.Utility.GetFormContextForCurrentField(ctx);
 
             // save some stuff from the schema we're going to need later
-            $.entityEditorImpl.source[ctx.CurrentFieldSchema.Name] = ctx.CurrentFieldSchema.MultiChoices;
-            $.entityEditorImpl.schema[ctx.CurrentFieldSchema.Name] = ctx.CurrentFieldSchema;
+            $.entityEditorImpl.source[current.fieldName] = current.fieldSchema.MultiChoices;
+            $.entityEditorImpl.schema[current.fieldName] = current.fieldSchema;
 
             // construct the outer html for our control
-            var result = $.entityEditorImpl.constructOuterContainer(ctx, true);
+            var result = $.entityEditorImpl.constructOuterContainer(current);
             var entityEditor = result.find(".csrdemos-entityeditor");
 
             // initialize the editor with current values
-            $.entityEditorImpl.constructInitialEntities(ctx, entityEditor, true);
+            $.entityEditorImpl.constructInitialEntities(ctx, current, entityEditor);
 
             // add the text input to the entitiy edity div
-            $.entityEditorImpl.constructInput(ctx, entityEditor);
+            $.entityEditorImpl.constructInput(ctx, current, entityEditor);
+
+            // register a callback to return the current value
+            current.registerGetValueCallback(current.fieldName, function () {
+                return $.entityEditorImpl.getFieldValue(current);
+            });
+
+            // register validators for this control
+            $.entityEditorImpl.registerValidators(current);
 
             // add a deferred event handler for the remove entity anchor
             $(".ms-formtable").on("click", ".csrdemos-remove", function (e) {
@@ -84,15 +84,6 @@
                 entityEditorInput.autocomplete("option", "source", $.entityEditorImpl.source[fieldName].sort()).focus();
                 return false;
             });
-
-            // register a callback to return the current value
-            var current = SPClientTemplates.Utility.GetFormContextForCurrentField(ctx);
-            current.registerGetValueCallback(current.fieldName, function () {
-                return $.entityEditorImpl.getFieldValue(current);
-            });
-
-            // register validators for this control
-            $.entityEditorImpl.registerValidators(current);
 
             return result.html();
         },
@@ -190,65 +181,13 @@
         /*
          * Shove a link to the stylesheet into the DOM one time.
          */
-        getCss: function (ctx) {
-            if (!formWebPartId) {
-                formWebPartId = "WebPart" + ctx.FormUniqueId;
-                var css = (function () {/*
-                    <style type='text/css'>
-                        .csrdemos-entityeditor {
-                            border: 1px solid #ababab;
-                            width: 390px;
-                            padding: 3px;
-                            background: white;
-                        }
-
-                        .csrdemos-entityeditor:hover {
-                            border: 1px solid #92c0e0;
-                        }
-
-                        .csrdemos-entityeditor:focus {
-                            border: 1px solid #2a8dd4;
-                        }
-
-                        input.csrdemos-entityeditorinput {
-                            width: 200px;
-                            position: relative;
-                            float: left;
-                            border: none;
-                        }
-
-                        .csrdemos-entity {
-                            display: block;
-                            padding: 2px 3px 1px 5px;
-                            margin-right: 2px;
-                            margin-bottom: 1px;
-                            position: relative;
-                            float: left;
-                            background-color: #eee;
-                            border: 1px solid #333;
-                            -moz-border-radius: 7px;
-                            -webkit-border-radius: 7px;
-                            border-radius: 7px;
-                            color: #333;
-                            font: n ormal 11px Verdana, Sans-serif;
-                        }
-
-                        .csrdemos-entitydelete {
-                            position: absolute;
-                            right: 8px;
-                            top: 2px;
-                            color: #666;
-                            font: bold 12px Verdana, Sans-serif;
-                            text-decoration: none;
-                        }
-
-                        .csrdemos-remove {
-                            margin-left: 5px;
-                            color: #0072c6;
-                        }
-                    </style>
-                 */}).toString().slice(15, -3);
-                $("body").prepend(css);
+        getCss: function () {
+            if (!$('body').attr('data-entityeditorcssadded')) {
+                var css = _spPageContextInfo.siteAbsoluteUrl +
+                    "/Style%20Library/jquery-ui.css";
+                $('head').append(
+                    '<link rel="stylesheet" type="text/css" href="' + css + '">');
+                $('body').attr('data-entityeditorcssadded', 'true');
             }
         },
 
@@ -256,7 +195,7 @@
          * Select an entity from the autocomplete list.
          */
         selectEntity: function (fieldName, value, entityEditorInput) {
-            var $span = $("<span>", {
+            var span = $("<span>", {
                 "class": "csrdemos-entity",
                 "title": value,
                 "data-fieldname": fieldName
@@ -267,8 +206,8 @@
                 "title": "Remove Entity",
                 "data-fieldname": fieldName,
                 "data-value": value
-            }).text("x").appendTo($span);
-            $span.insertBefore(entityEditorInput);
+            }).text("x").appendTo(span);
+            span.insertBefore(entityEditorInput);
 
             $.entityEditorImpl.source[fieldName].splice(
                 $.inArray(value, $.entityEditorImpl.source[fieldName]), 1);
@@ -287,12 +226,12 @@
         /*
          * Construct the outer div for the entity editor.
          */
-        constructOuterContainer: function (ctx, isEditable) {
+        constructOuterContainer: function (current) {
             var result = $('<p/>');
             var entityEditor = $('<div/>', {
-                'id': ctx.CurrentFieldSchema.Name + 'EntityEditor',
-                'class': (isEditable ? 'ui-helper-clearfix csrdemos-entityeditor' : 'ui-helper-clearfix'),
-                'data-fieldname': ctx.CurrentFieldSchema.Name
+                'id': current.fieldName + 'EntityEditor',
+                'class': 'ui-helper-clearfix csrdemos-entityeditor',
+                'data-fieldname': current.fieldName
             });
             result.append(entityEditor);
             return result;
@@ -301,47 +240,33 @@
         /*
          * Add a span for each entity in ctx.CurrentFieldValue.
          */
-        constructInitialEntities: function (ctx, entityEditor, isEditable) {
+        constructInitialEntities: function (ctx, current, entityEditor) {
             // if the field has a current value, initilize the control with it
-            if (ctx.CurrentItem[ctx.CurrentFieldSchema.Name].length > 0) {
+            if (ctx.CurrentFieldValue.length > 0) {
                 // parse the values into an array
-                var values = [];
-                if (ctx.CurrentItem[ctx.CurrentFieldSchema.Name]) {
-                    if (Array.isArray(ctx.CurrentItem[ctx.CurrentFieldSchema.Name])) {
-                        values = ctx.CurrentItem[ctx.CurrentFieldSchema.Name];
-                    }
-                    else if (ctx.CurrentItem[ctx.CurrentFieldSchema.Name].indexOf(";#") >= 0) {
-                        values = ctx.CurrentItem[ctx.CurrentFieldSchema.Name].replace(/^;#/, '').replace(/;#$/, '').split(';#');
-                    }
-                    else {
-                        values = ctx.CurrentItem[ctx.CurrentFieldSchema.Name].split(';');
-                    }
-                }
+                var values = ctx.CurrentFieldValue.replace(/^;#/, '').replace(/;#$/, '').split(';#');
+
                 // for each value, push a span into the entity editor div
                 $.each(values, function (idx, value) {
-                    if (isEditable) {
-                        // add an anchor tag to remove this entity
-                        var anchor = $('<a/>', {
-                            "title": "Remove Entity",
-                            "data-fieldname": ctx.CurrentFieldSchema.Name,
-                            "data-value": value,
-                            "class": "csrdemos-remove",
-                            "href": "#"
-                        }).text("x");
-                    }
+                    // add an anchor tag to remove this entity
+                    var anchor = $('<a/>', {
+                        "title": "Remove Entity",
+                        "data-fieldname": current.fieldName,
+                        "data-value": value,
+                        "class": "csrdemos-remove",
+                        "href": "#"
+                    }).text("x");
 
                     // create the span from the value and the anchor
                     entityEditor.append($("<span/>", {
                         'title': value,
                         'class': 'csrdemos-entity'
-                    }).html(value + (isEditable ? anchor[0].outerHTML : "")));
+                    }).html(value + anchor[0].outerHTML));
 
-                    if (isEditable) {
-                        // remove the value from the list of potential values, so autocomplete won't allow duplicates
-                        if ($.inArray(value, $.entityEditorImpl.source[ctx.CurrentFieldSchema.Name]) > -1) {
-                            $.entityEditorImpl.source[ctx.CurrentFieldSchema.Name].splice(
-                                $.inArray(value, $.entityEditorImpl.source[ctx.CurrentFieldSchema.Name]), 1);
-                        }
+                    // remove the value from the list of potential values, so autocomplete won't allow duplicates
+                    if ($.inArray(value, $.entityEditorImpl.source[current.fieldName]) > -1) {
+                        $.entityEditorImpl.source[current.fieldName].splice(
+                            $.inArray(value, $.entityEditorImpl.source[current.fieldName]), 1);
                     }
                 });
             }
@@ -350,22 +275,22 @@
         /*
          * Add the input control to the entity editor
          */
-        constructInput: function (ctx, entityEditor) {
+        constructInput: function (ctx, current, entityEditor) {
             // add an input for the user to type into, this is the autocomplete input
             var input = $('<input/>', {
-                'id': ctx.CurrentFieldSchema.Name + '_' + ctx.CurrentFieldSchema.Id + '_EntityEditorInput',
-                'name': ctx.CurrentFieldSchema.Name + 'EntityEditorInput',
+                'id': current.fieldName + 'EntityEditorInput',
+                'name': current.fieldName + 'EntityEditorInput',
                 'type': 'text',
                 'class': 'csrdemos-entityeditorinput'
             });
-            if ($.entityEditorImpl.schema[ctx.CurrentFieldSchema.Name].FieldType !== "MultiChoice" && ctx.CurrentFieldValue.length > 0) {
+            if ($.entityEditorImpl.schema[current.fieldName].FieldType !== "MultiChoice" && ctx.CurrentFieldValue.length > 0) {
                 input.hide();
             }
             entityEditor.append(input);
 
             // finally, append a span where we'll output any validation errors
             entityEditor.parent().append($('<span/>', {
-                'id': ctx.CurrentFieldSchema.Name + 'EntityEditorError',
+                'id': current.fieldName + 'EntityEditorError',
                 'class': 'ms-formvalidation'
             }));
         }
@@ -386,12 +311,19 @@
      */
     $.each($($.csrConfig.entityEditorFields), function (i, v) {
         entityEditorOverrides.Templates.Fields[v] = {
-            'NewForm': $.entityEditorImpl.inputMethod,
-            'EditForm': $.entityEditorImpl.inputMethod,
+            'View': $.entityEditorImpl.displayMethod,
             'DisplayForm': $.entityEditorImpl.displayMethod,
-            'View': $.entityEditorImpl.displayMethod
+            'NewForm': $.entityEditorImpl.inputMethod,
+            'EditForm': $.entityEditorImpl.inputMethod
         };
     });
+
+    var formWebPartId;
+    entityEditorOverrides.OnPreRender = function (ctx) {
+        if (!formWebPartId) {
+            $("body").prepend(entityEditorCss);
+        }
+    }
 
     /*
      * Add a post render override event to add the autocomplete functionality and other
@@ -400,8 +332,8 @@
     entityEditorOverrides.OnPostRender = function (ctx) {
         var fieldName = ctx.ListSchema.Field[0].Name;
         if ($.inArray(fieldName, $.csrConfig.entityEditorFields) > -1) {
-            var $div = $("#" + fieldName + "EntityEditor");
-            var input = $div.find("input.csrdemos-entityeditorinput");
+            var div = $("#" + fieldName + "EntityEditor");
+            var input = div.find("input.csrdemos-entityeditorinput");
 
             // initialize the jquery-ui autocomplete on the input
             input.autocomplete({
@@ -411,7 +343,7 @@
                 }
             });
 
-            // if the user inputs a return, try to resolve whatever is in the input
+            // if the user inputs a return, try to resolve whatever is in the input=
             input.keydown(function (e) {
                 // if the key is return
                 if (e.which === 13) {
@@ -444,23 +376,81 @@
             });
 
             // if the outer div receives a click event, put focus on the input
-            $div.click(function (e) {
-                $(e.target).find(".csrdemos-entityeditorinput").focus();
+            div.click(function (e) {
+                var div = $(e.target);
+                div.find(".csrdemos-entityeditorinput").focus();
             });
         }
     };
 
-    // register template overrides for partial page loads if MDS is enabled
+    // register my template overrides
     if (typeof _spPageContextInfo != 'undefined' && _spPageContextInfo != null) {
+        // MDS is enabled
         var url = (_spPageContextInfo.siteServerRelativeUrl === '/' ? "" : _spPageContextInfo.siteServerRelativeUrl) +
             '/Style%20Library/EntityEditorCSR.js';
-
+        // register a callback to register the templates on partial page loads
         RegisterModuleInit(url.toLowerCase(), function () {
             SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
         });
     }
 
-    // also register templates now for non-MDS and full page loads
+    // also just register for full page loads (F5/refresh)
     SPClientTemplates.TemplateManager.RegisterTemplateOverrides(entityEditorOverrides);
+
+    var entityEditorCss = (function () {/*
+            <style type='text/css'>
+                .csrdemos-entityeditor {
+                    border: 1px solid #ababab;
+                    width: 390px;
+                    padding: 3px;
+                    background: white;
+                }
+
+                .csrdemos-entityeditor:hover {
+                    border: 1px solid #92c0e0;
+                }
+
+                .csrdemos-entityeditor:focus {
+                    border: 1px solid #2a8dd4;
+                }
+
+                input.csrdemos-entityeditorinput {
+                    width: 200px;
+                    position: relative;
+                    float: left;
+                    border: none;
+                }
+
+                .csrdemos-entity {
+                    display: block;
+                    padding: 2px 3px 1px 5px;
+                    margin-right: 2px;
+                    margin-bottom: 1px;
+                    position: relative;
+                    float: left;
+                    background-color: #eee;
+                    border: 1px solid #333;
+                    -moz-border-radius: 7px;
+                    -webkit-border-radius: 7px;
+                    border-radius: 7px;
+                    color: #333;
+                    font: n ormal 11px Verdana, Sans-serif;
+                }
+
+                .csrdemos-entitydelete {
+                    position: absolute;
+                    right: 8px;
+                    top: 2px;
+                    color: #666;
+                    font: bold 12px Verdana, Sans-serif;
+                    text-decoration: none;
+                }
+
+                .csrdemos-remove {
+                    margin-left: 5px;
+                    color: #0072c6;
+                }
+            </style>
+         */}).toString().slice(15, -3);
 })(jQuery);
 

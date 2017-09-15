@@ -12,6 +12,7 @@
             'EntityEditor',
             'TagsCovered',
             'TagsNotCovered',
+            'Track',
             'SingleTag'
         ],
     };

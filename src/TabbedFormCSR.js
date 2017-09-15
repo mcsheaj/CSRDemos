@@ -4,10 +4,8 @@
         return;
 
     var tabs = [
-        ["Basic", ["Title", "FirstName", "FullName", "Company", "JobTitle", "ContentType", "BusinessUnit", "Skills"]],
-        ["Address", ["WorkAddress", "WorkCity", "WorkState", "WorkZip", "WorkCountry"]],
-        ["Phone", ["WorkPhone", "WorkFax", "CellPhone", "HomePhone"]],
-        ["Miscellaneous", ["Email", "WebPage", "Comments", "SalesRegion", "SalesDivision", "SalesState"]]
+        ["Evaluation", ["Title", "SalesDivision", "SalesRegion", "SalesState", "Track", "OverallSatisfaction", "ContentQuality", "ContentRelevance", "PresentationSkills"]],
+        ["Additional Information", ["TagsCovered", "TagsNotCovered", "GeneralComments"]]
     ];
 
     var formWebPartId;
@@ -27,7 +25,7 @@
                 ul.append(li);
             }
             $("#" + formWebPartId).prepend(ul);
-            $("#" + formWebPartId).addClass("form-webpart").prepend(getCss());
+            $("#" + formWebPartId).addClass("form-webpart").prepend(insertCss());
 
             // add a click event handler to each of the tabs anchors.
             $('.tabs li a').on('click', function (e) {
@@ -45,9 +43,15 @@
      * As each field is rendered, add and id so it to the row to make it easy to find and hide the row.
      */
     function postRender(ctx) {
-        $("td.ms-formbody").filter(function (pos, item) {
-            return item.innerHTML.indexOf('FieldInternalName="' + ctx.ListSchema.Field[0].Name + '"') > 0;
-        }).closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();
+        var td = $("#" + ctx.ListSchema.Field[0].Name);
+        if(td.length === 1) {
+            td.closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();
+        }
+        else {
+            $("td.ms-formbody").filter(function (pos, item) {
+                return item.innerHTML.indexOf('FieldInternalName="' + ctx.ListSchema.Field[0].Name + '"') > 0;
+            }).closest("tr").attr('id', 'tr_' + ctx.ListSchema.Field[0].Name).hide();
+        }
     }
 
     /*
@@ -82,7 +86,7 @@
     // also just register for non-MDS and full page loads
     SPClientTemplates.TemplateManager.RegisterTemplateOverrides(overrides);
 
-    function getCss() {
+    function insertCss() {
         return (function () {/*
             <style type='text/css'>
                 .tabs {
