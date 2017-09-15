@@ -1,14 +1,14 @@
 ﻿Demo 1 - CSR Spy
 
+GeneralComments=
 ~sitecollection/Style Library/CSRSPY.js
 
-Demo 2 - Type Ahead
+Demo 2 - Cascading Lookups
 
-JobTitle & Company = 
+SalesDivision & SalesState = 
 ~sitecollection/Style Library/jquery.js
-~sitecollection/Style Library/jquery-ui.js
 ~sitecollection/Style Library/jquery.spservices.js
-~sitecollection/Style Library/AutocompleteCSR.js
+~sitecollection/Style Library/CascadeDropdownsCSR.js
 
 ScriptLinks (global)
 
@@ -17,18 +17,21 @@ ScriptLinks (global)
 ~sitecollection/Style Library/jquery-ui.css
 ~sitecollection/Style Library/jquery.spservices.js
 
-Demo 3 - Cascading Lookups
+Demo 3 - SatisfactionCSR.js 
 
-SalesDivision & SalesState = 
-~sitecollection/Style Library/CascadeDropdownsCSR.js
+OverallSatisfaction= 
+~sitecollection/Style Library/SatisfactionCSR.js
 
-Demo 4 - Tabbed Form
+Demo 4 - Tabbed Form (on content type)
 
-Employee = ~sitecollection/Style Library/TabbedFormCSR.js
+Speaker Evaluation= 
+~sitecollection/Style Library/TabbedFormCSR.js
 
 Demo 5 - Entity Editor
 
-BusinessUnit = ~sitecollection/Style Library/EntityEditorCSR.js
+TagsCovered = 
+~sitecollection/Style Library/CSRConfig.js
+~sitecollection/Style Library/EntityEditorCSR.js
 
 Demo 6 - Accordion View
 
